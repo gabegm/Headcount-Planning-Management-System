@@ -1,0 +1,128 @@
+{% extends "base.html" %} {% block head %} {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='analytics-style.css') }}"> {% endblock %} {% block main %}
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.index " %} active {% endif %}" href="{{ url_for('admin.index') }}">
+              <span data-feather="bar-chart-2"></span>
+              Dashboard {% if request.endpoint == "admin.index" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.gatekeeping " %} active {% endif %}" href="{{ url_for('admin.gatekeeping') }}">
+              <span data-feather="filter"></span>
+              Gatekeeping {% if request.endpoint == "admin.gatekeeping" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.submission " %} active {% endif %}" href="{{ url_for('admin.submission') }}">
+              <span data-feather="send"></span>
+              Submissions {% if request.endpoint == "admin.submission" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.budget " %} active {% endif %}" href="{{ url_for('admin.budget') }}">
+              <span data-feather="briefcase"></span>
+              {{ now.year }} Budget {% if request.endpoint == "admin.budget" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.position " %} active {% endif %}" href="{{ url_for('admin.position') }}">
+              <span data-feather="briefcase"></span>
+              Positions {% if request.endpoint == "admin.position" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.user " %} active {% endif %}" href="{{ url_for('admin.user') }}">
+              <span data-feather="users"></span>
+              Users {% if request.endpoint == "admin.user" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.pillar " %} active {% endif %}" href="{{ url_for('admin.pillar') }}">
+              <span data-feather="list"></span>
+              Pillars {% if request.endpoint == "admin.pillar" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.company " %} active {% endif %}" href="{{ url_for('admin.company') }}">
+              <span data-feather="list"></span>
+              Companies {% if request.endpoint == "admin.company" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.department " %} active {% endif %}" href="{{ url_for('admin.department') }}">
+              <span data-feather="list"></span>
+              Departments {% if request.endpoint == "admin.department" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.function " %} active {% endif %}" href="{{ url_for('admin.function') }}">
+              <span data-feather="list"></span>
+              Functions {% if request.endpoint == "admin.function" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.submission_status " %} active {% endif %}" href="{{ url_for('admin.submission_status') }}">
+              <span data-feather="list"></span>
+              Submission Statuses {% if request.endpoint == "admin.submission_status" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.position_status " %} active {% endif %}" href="{{ url_for('admin.position_status') }}">
+              <span data-feather="list"></span>
+              Position Statuses {% if request.endpoint == "admin.position_status" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.exchange_rate " %} active {% endif %}" href="{{ url_for('admin.exchange_rate') }}">
+              <span data-feather="dollar-sign"></span>
+              Exchange Rates {% if request.endpoint == "admin.exchange_rate" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.help " %} active {% endif %}" href="{{ url_for('admin.help') }}">
+              <span data-feather="help-circle"></span>
+              Help {% if request.endpoint == "admin.help" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.faq " %} active {% endif %}" href="{{ url_for('admin.faq') }}">
+              <span data-feather="help-circle"></span>
+              FAQ {% if request.endpoint == "admin.faq" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == " admin.audit " %} active {% endif %}" href="{{ url_for('admin.audit') }}">
+              <span data-feather="monitor"></span>
+              Audit Trail {% if request.endpoint == "admin.audit" %}
+              <span class="sr-only">(current)</span>{% endif %}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

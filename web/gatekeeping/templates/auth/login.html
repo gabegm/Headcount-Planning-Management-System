@@ -1,0 +1,70 @@
+{% extends 'layout/auth.html' %} {% block header %}
+<h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %} {% block content %}
+<form class="form-signin" method="post">
+  <div class="text-center mb-4">
+    <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="50%" height="50%">
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+  </div>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Holy guacamole!</strong> {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <div class="form-label-group">
+    <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required autofocus>
+    <label for="inputEmail">Email address</label>
+  </div>
+
+  <div class="form-label-group">
+    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+    <label for="inputPassword">Password</label>
+  </div>
+
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+  <a class="btn-block" href="{{ url_for('auth.register') }}">Create an account</a>
+
+  <a class="btn-block" href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
+
+  <p class="mt-5 mb-3 text-muted">&copy; 2018-{{ now.year }}</p>
+</form>
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Successful Registration</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Thank you for registering on the gatekeeping application. The system administrator has been notified and will activate
+          your account shortly.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block script %}
+
+<script>
+  $(document).ready(function () {
+    var show_modal = {{ request.args.get('show_modal')|tojson }};
+    if (show_modal == 'True') {
+      $('#modal').modal('show');
+    }
+  });
+</script> {% endblock %}

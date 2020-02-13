@@ -1,0 +1,47 @@
+{% extends 'layout/dashboard.html' %} {% block header %} {% endblock %} {% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 pt-3 pb-2 mb-3">Help</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group">
+            <a class="action btn btn-outline-primary" id="savePost" href="" form="help">
+                <span data-feather="save"></span>
+                Save
+            </a>
+        </div>
+    </div>
+</div>
+
+<form id="helpPost">
+    <textarea id="summernote" name="editordata">
+        {{ page['body'] }}
+    </textarea>
+</form>
+
+{% endblock %} {% block script %}
+<!-- include summernote css/js -->
+<script src="{{ url_for('static', filename='plugins/summernote/summernote-bs4.min.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/summernote/summernote-bs4.css') }}">
+<script>
+    $('#summernote').summernote({
+        placeholder: 'Gabe is amazing.',
+        tabsize: 2,
+        height: 500,
+        focus: true
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // add step button opens modal containing step form loaded via ajax
+        $('#savePost').click(function (event) {
+            event.preventDefault();
+            console.log($('#summernote').val())
+            $.post(url="{{ url_for('admin.help-update') }}", data = $('#helpPost').serialize(), function (data) {
+                console.log(data.status)
+                if (data.status == 'ok') {
+                    location.reload();
+                }
+            });
+        });
+    });
+</script>{% endblock %}

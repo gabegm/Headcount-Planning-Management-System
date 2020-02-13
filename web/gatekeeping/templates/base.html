@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% block head %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Gatekeeping app">
+  <meta name="author" content="Gabriel Gauci Maistre">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+  <title>Gatekeeping</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+  <!-- DataTables core CSS-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/DataTables/dataTables.min.css') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% endblock %}
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Gatekeeping</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item {% if request.endpoint == "home.index" %} active {% endif %}">
+          <a class="nav-link" href="{{ url_for('index') }}">Home
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item dropdown {% if request.blueprint == "submission" %} active {% endif %}">
+          <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Submissions
+              {% if request.blueprint == "submission" %}
+              <span class="sr-only">(current)</span>{% endif %}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdown01">
+            <a class="dropdown-item" href="{{ url_for('submission.index') }}">View</a>
+            <a class="dropdown-item" href="{{ url_for('submission.create') }}">Create</a>
+          </div>
+        </li>
+        <li class="nav-item {% if request.endpoint == "position.index" %} active {% endif %}">
+          <a class="nav-link" href="{{ url_for('position.index') }}">Positions
+              {% if request.endpoint == "position" %}
+              <span class="sr-only">(current)</span>{% endif %}
+          </a>
+        </li>
+        {% if g.user['type'] == 'ADMIN' %}
+        <li class="nav-item {% if request.endpoint == "admin.index" %} active {% endif %}">
+            <a class="nav-link" href="{{ url_for('admin.index') }}">Admin
+                {% if request.endpoint == "admin.index" %}
+                <span class="sr-only">(current)</span>{% endif %}
+            </a>
+        </li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav">
+        {% if g.user %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out ({{ g.user['email'].split('@')[0] }})</a>
+        </li>
+        {% endif %}
+        <li class="nav-item {% if request.endpoint == "help.index" %} active {% endif %}">
+          <a class="nav-link" href="{{ url_for('help.index') }}">Help
+            {% if request.endpoint == "help" %}
+            <span class="sr-only">(current)</span>{% endif %}
+          </a>
+        </li>
+        <li class="nav-item {% if request.endpoint == "faq.index" %} active {% endif %}">
+          <a class="nav-link" href="{{ url_for('faq.index') }}">FAQ
+            {% if request.endpoint == "faq" %}
+            <span class="sr-only">(current)</span>{% endif %}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  {% block main %}{% endblock %}
+
+  <!-- Bootstrap core JavaScript
+      ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+  <!-- Icons -->
+  <script src="{{ url_for('static', filename='js/feather.min.js') }}"></script>
+  <script>
+    feather.replace()
+  </script>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+  {% block script %}{% endblock %}
+
+</body>
+
+</html>

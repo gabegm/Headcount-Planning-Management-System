@@ -1,0 +1,598 @@
+{% extends 'layout/dashboard.html' %} {% block header %}
+<!-- DataTables core CSS-->
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/DataTables/dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/DataTables/dataTables.bootstrap4.min.css') }}">
+{% endblock %} {% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 pt-3 pb-2 mb-3">Positions</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group">
+                <a id="createPositionLink" class="action btn btn-outline-primary" href="" data-toggle="modal" data-target="#createModal">
+                <span data-feather="plus-square"></span>
+                New
+            </a>
+            <a class="action btn btn-outline-primary" id="uploadPositionLink" href="" data-toggle="modal" data-target="#uploadModal">
+                <span data-feather="arrow-up"></span>
+                Upload
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table id="example" class="table table-striped table-bordered hover">
+        <thead>
+            <tr>
+                <th scope="col">Status</th>
+                <th scope="col">Recruitment Status</th>
+                <th scope="col">Number</th>
+                <th scope="col">Pillar</th>
+                <th scope="col">Company</th>
+                <th scope="col">Department</th>
+                <th scope="col">Function</th>
+                <th scope="col">Title</th>
+                <th scope="col">Functional Reporting Line</th>
+                <th scope="col">Disciplinary Reporting Line</th>
+                <th scope="col">Holder</th>
+                <th scope="col">Hours</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Salary</th>
+                <th scope="col">Social Security Contribution</th>
+                <th scope="col">Fringe Benefit</th>
+                <th scope="col">Performance Bonus</th>
+                <th scope="col">Super Bonus</th>
+                <th scope="col">Management Bonus</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in positions %}
+            <tr>
+                <td>{{ p['status'] }}</td>
+                <td>{{ p['recruitment_status'] }}</td>
+                <td>{{ p['number'] }}</td>
+                <td>{{ p['pillar'] }}</td>
+                <td>{{ p['company'] }}</td>
+                <td>{{ p['department'] }}</td>
+                <td>{{ p['function'] }}</td>
+                <td>{{ p['title'] }}</td>
+                <td>{{ p['functional_reporting_line'] }}</td>
+                <td>{{ p['disciplinary_reporting_line'] }}</td>
+                <td>{{ p['holder'] }}</td>
+                <td>{{ p['hours'] }}</td>
+                <td>{{ p['start_date'] }}</td>
+                <td>{{ p['end_date'] }}</td>
+                <td>&euro;{{ '%0.2f'| format(p['salary']|float * p['rate']) }}</td>
+                <td>&euro;{{ p['social_security_contribution'] }}</td>
+                <td>&euro;{{ p['fringe_benefit'] }}</td>
+                <td>{{ p['performance_bonus'] }}%</td>
+                <td>{{ p['super_bonus'] }}%</td>
+                <td>&euro;{{ p['management_bonus'] }}</td>
+                <td>
+                    <a href="" id="editPositionLink" data-id="{{ p['id'] }}" data-toggle="modal" data-target="#editModal">Edit</a>
+                    <a href="" id="deletePositionLink" data-id="{{ p['id'] }}" data-toggle="modal" data-target="#deleteModal">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% with messages = get_flashed_messages(category_filter=["create"]) %}
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Holy guacamole!</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <form id="createPosition">
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Number</label>
+                        <input type="text" name="number" class="form-control" id="exampleFormControlInput1" placeholder="XXX.000">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Status</label>
+                        <select name="positionStatuses" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Recruitment Status</label>
+                        <select name="recruitmentStatuses" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Pillar</label>
+                        <select name="pillars" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Company</label>
+                        <select name="companies" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Department</label>
+                        <select name="departments" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Function</label>
+                        <select name="functions" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Title</label>
+                        <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Data Genius">
+                    </div>
+                    <div class="form-group">
+                        <label>Functional Reporting Line</label>
+                        <input type="text" name="functionalReportingLine" class="form-control" id="exampleFormControlInput1" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Disciplinary Reporting Line</label>
+                        <input type="text" name="disciplinaryReportingLine" class="form-control" id="exampleFormControlInput1" placeholder="Jane Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Holder</label>
+                        <input type="text" name="holder" class="form-control" id="exampleFormControlInput1" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Hours</label>
+                        <input type="number" name="hours" class="form-control" id="exampleFormControlInput1" placeholder="40">
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" name="startDate" min="2018-01-01" max="2022-12-31" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" name="endDate" min="2018-01-01" max="2022-12-31" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Salary</label>
+                        <input type="text" name="salary" class="form-control" id="exampleFormControlInput1" placeholder="&euro;">
+                    </div>
+                    <div class="form-group">
+                        <label>Social Security Contribution</label>
+                        <input type="number" name="socialSecurityContribution" class="form-control" id="exampleFormControlInput1" placeholder="&euro;3000">
+                    </div>
+                    <div class="form-group">
+                        <label>Fringe Benefit</label>
+                        <input type="number" name="fringeBenefit" class="form-control" id="exampleFormControlInput1" placeholder="&euro;40">
+                    </div>
+                    <div class="form-group">
+                        <label>Performance Bonus</label>
+                        <input type="number" name="performanceBonus" class="form-control" id="exampleFormControlInput1" placeholder="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Super Bonus</label>
+                        <input type="number" name="superBonus" class="form-control" id="exampleFormControlInput1" placeholder="15">
+                    </div>
+                    <div class="form-group">
+                        <label>Management Bonus</label>
+                        <input type="number" name="managementBonus" class="form-control" id="exampleFormControlInput1" placeholder="10000">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="createPositionButton" class="btn btn-primary" form="createPosition">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% with messages = get_flashed_messages(category_filter=["upload"]) %}
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Holy guacamole!</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <form id="uploadPosition">
+                    <div class="form-group">
+                        <label for="exampleFormControlFile1">File</label>
+                        <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Import type</label>
+                        <select name="importType" class="form-control" id="exampleFormControlSelect1">
+                            <option>Insert</option>
+                            <option>Update</option>
+                            <option>Upsert</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Delimeter</label>
+                        <select name="delimeter" class="form-control" id="exampleFormControlSelect1">
+                            <option value=",">Comma</option>
+                            <option value="/t">Tab</option>
+                            <option value="|">Pipe</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Date format</label>
+                        <select name="dateFormat" class="form-control" id="exampleFormControlSelect1">
+                            <option>dd/mm/yyyy</option>
+                            <option>mm/dd/yyyy</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="uploadPositionButton" class="btn btn-primary" form="uploadPosition">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages[0] %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Holy guacamole!</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <form id="editPosition">
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Number</label>
+                        <input type="text" name="number" class="form-control" id="exampleFormControlInput1" placeholder="XXX000">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Status</label>
+                        <select name="positionStatuses" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Recruitment Status</label>
+                        <select name="recruitmentStatuses" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Pillar</label>
+                        <select name="pillars" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Company</label>
+                        <select name="companies" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Department</label>
+                        <select name="departments" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Function</label>
+                        <select name="functions" class="form-control" id="exampleFormControlSelect1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Title</label>
+                        <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Data Genius">
+                    </div>
+                    <div class="form-group">
+                        <label>Functional Reporting Line</label>
+                        <input type="text" name="functionalReportingLine" class="form-control" id="exampleFormControlInput1" placeholder="XXX000">
+                    </div>
+                    <div class="form-group">
+                        <label>Disciplinary Reporting Line</label>
+                        <input type="text" name="disciplinaryReportingLine" class="form-control" id="exampleFormControlInput1" placeholder="XXX000">
+                    </div>
+                    <div class="form-group">
+                        <label>Holder</label>
+                        <input type="text" name="holder" class="form-control" id="exampleFormControlInput1" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Hours</label>
+                        <input type="number" name="hours" class="form-control" id="exampleFormControlInput1" placeholder="40">
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" name="startDate" min="2018-01-01" max="2022-12-31" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" name="endDate" min="2018-01-01" max="2022-12-31" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Salary</label>
+                        <input type="number" name="salary" class="form-control" id="exampleFormControlInput1" placeholder="&euro;20000">
+                    </div>
+                    <div class="form-group">
+                        <label>Social Security Contribution</label>
+                        <input type="number" name="socialSecurityContribution" class="form-control" id="exampleFormControlInput1" placeholder="&euro;3000">
+                    </div>
+                    <div class="form-group">
+                        <label>Fringe Benefit</label>
+                        <input type="number" name="fringeBenefit" class="form-control" id="exampleFormControlInput1" placeholder="&euro;40">
+                    </div>
+                    <div class="form-group">
+                        <label>Performance Bonus</label>
+                        <input type="number" name="performanceBonus" class="form-control" id="exampleFormControlInput1" placeholder="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Super Bonus</label>
+                        <input type="number" name="superBonus" class="form-control" id="exampleFormControlInput1" placeholder="15">
+                    </div>
+                    <div class="form-group">
+                        <label>Management Bonus</label>
+                        <input type="number" name="managementBonus" class="form-control" id="exampleFormControlInput1" placeholder="&euro;10000">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="createPositionButton" class="btn btn-primary" form="createPosition">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block script %}
+<script src="{{ url_for('static', filename='plugins/DataTables/datatables.min.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            scrollY: '50vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#createPositionLink').click(function (event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{{ url_for('admin.position-create') }}",
+                type: 'GET',
+                success: function (data){
+                    $('#createPosition').find('[name="companies"]').find('option').remove();
+                    $.each(data['companies'], function(key, value) {
+                        $('#createPosition').find('[name="companies"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="departments"]').find('option').remove();
+                    $.each(data['departments'], function(key, value) {
+                        $('#createPosition').find('[name="departments"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="pillars"]').find('option').remove();
+                    $.each(data['pillars'], function(key, value) {
+                        $('#createPosition').find('[name="pillars"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="functions"]').find('option').remove();
+                    $.each(data['functions'], function(key, value) {
+                        $('#createPosition').find('[name="functions"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="positionStatuses"]').find('option').remove();
+                    $.each(data['positionStatuses'], function(key, value) {
+                        $('#createPosition').find('[name="positionStatuses"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="recruitmentStatuses"]').find('option').remove();
+                    $.each(data['recruitmentStatuses'], function(key, value) {
+                        $('#createPosition').find('[name="recruitmentStatuses"]').append('<option>' + value + '</option>');
+                    });
+                    console.log('test')
+                    $('#createPositionButton').click(function (event) {
+                        event.preventDefault();
+                        console.log($('#createPosition').serialize());
+                        $.post(url = "{{ url_for('admin.position-create') }}", data = $('#createPosition').serialize(), function (data) {
+                            if (data.status == 'ok') {
+                                $('#createModal').modal('hide');
+                                location.reload();
+                            }
+                            else {
+                                location.reload();
+                            }
+                        });
+                    })
+                },
+                error: function(e) {
+                    console.log(e);
+                }
+            });
+        })
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#uploadPositionButton').click(function (event) {
+            event.preventDefault();
+            console.log(new FormData($('#uploadPosition')[0]))
+            $.ajax({
+                url: "{{ url_for('admin.position-upload') }}",
+                data: new FormData($('#uploadPosition')[0]),
+                type: 'POST',
+                contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+                processData: false, // NEEDED, DON'T OMIT THIS
+                success: function (data) {
+                    if (data.status == 'ok') {
+                        $('#uploadModal').modal('hide');
+                        location.reload();
+                    }
+                    else {
+                        $('#uploadModal .modal-content').html(data);
+                    }
+                }
+            });
+        })
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // add step button opens modal containing step form loaded via ajax
+        $('body').on('click', '#editPositionLink', function () {
+            var id = $(this).attr('data-id');
+            var url = "{{ url_for('admin.position-update', id=-1, _external=True) }}".replace("-1", id);
+            console.log(url);
+
+            $.get(url, function (data) {
+                // Populate the form fields with the data returned from server
+                console.log(data)
+                console.log(data['position']['start_date'])
+
+                $('#editPosition')
+                    .find('[name="positionStatuses"] option').remove().end()
+                    .find('[name="recruitmentStatuses"] option').remove().end()
+                    .find('[name="pillars"] option').remove().end()
+                    .find('[name="companies"] option').remove().end()
+                    .find('[name="departments"] option').remove().end()
+                    .find('[name="functions"] option').remove().end()
+                    .find('[name="number"]').val(data['position']['number']).end()
+                    .find('[name="title"]').val(data['position']['title']).end()
+                    .find('[name="functionalReportingLine"]').val(data['position']['functional_reporting_line']).end()
+                    .find('[name="disciplinaryReportingLine"]').val(data['position']['disciplinary_reporting_line']).end()
+                    .find('[name="holder"]').val(data['position']['holder']).end()
+                    .find('[name="hours"]').val(data['position']['hours']).end()
+                    .find('[name="startDate"]').val(data['position']['start_date']).end()
+                    .find('[name="endDate"]').val(data['position']['end_date']).end()
+                    .find('[name="salary"]').val(data['position']['salary']).end()
+                    .find('[name="socialSecurityContribution"]').val(data['position']['social_security_contribution']).end()
+                    .find('[name="fringeBenefit"]').val(data['position']['fringe_benefit']).end()
+                    .find('[name="performanceBonus"]').val(data['position']['performance_bonus']).end()
+                    .find('[name="superBonus"]').val(data['position']['super_bonus']).end()
+                    .find('[name="managementBonus"]').val(data['position']['management_bonus']).end();
+
+                $.each(data['positionStatuses'], function (key, value) {
+                    $('#editPosition').find('[name="positionStatuses"]').append('<option>' + value + '</option>');
+                });
+
+                $.each(data['recruitmentStatuses'], function (key, value) {
+                    $('#editPosition').find('[name="recruitmentStatuses"]').append('<option>' + value + '</option>');
+                });
+
+                $.each(data['pillars'], function (key, value) {
+                    $('#editPosition').find('[name="pillars"]').append('<option>' + value + '</option>');
+                });
+
+                $.each(data['companies'], function (key, value) {
+                    $('#editPosition').find('[name="companies"]').append('<option>' + value + '</option>');
+                });
+
+                $.each(data['departments'], function (key, value) {
+                    $('#editPosition').find('[name="departments"]').append('<option>' + value + '</option>');
+                });
+
+                $.each(data['functions'], function (key, value) {
+                    $('#editPosition').find('[name="functions"]').append('<option>' + value + '</option>');
+                });
+
+                $('#editPosition')
+                    .find('[name="positionStatuses"]').val(data['position']['status']).end()
+                    .find('[name="recruitmentStatuses"]').val(data['position']['recruitment_status']).end()
+                    .find('[name="pillars"]').val(data['position']['pillar']).end()
+                    .find('[name="companies"]').val(data['position']['company']).end()
+                    .find('[name="departments"]').val(data['position']['department']).end()
+                    .find('[name="functions"]').val(data['position']['function']).end();
+
+                $('#updatePosition').click(function (event) {
+                    event.preventDefault();
+                    console.log($('#editPosition').serialize())
+                    $.post(url, data = $('#editPosition').serialize(), function (data) {
+                        console.log(data.status)
+                        if (data.status == 'ok') {
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            location.reload();
+                        }
+                    });
+                })
+            });
+        });
+    });
+</script>
+<script>
+    /* Trigger flash modal */
+    $(document).ready(function() {
+        {% with messages = get_flashed_messages(category_filter=["create"]) %}
+        {% if messages %}
+            //$("#createModal").modal();
+            $('#createPositionLink').attr({'data-toggle':'modal', 'data-target':'#createModal'}).trigger("click");
+        {% endif %}
+        {% endwith %}
+    
+        /*var messages = "{{ get_flashed_messages(category_filter=["create"])|safe }}";
+
+        if (typeof messages != 'undefined' && messages != '[]') {
+            $("#createModal").modal();
+        };*/
+    });
+</script>
+<script>
+    /* Trigger flash modal */
+    $(document).ready(function() {
+        {% with messages = get_flashed_messages(category_filter=["update"]) %}
+        {% if messages %}
+            var id = {{ messages[0][1] }};
+            $('#editPositionLink').attr({'data-id': id, 'data-toggle':'modal', 'data-target':'#editModal'}).trigger("click");
+        {% endif %}
+        {% endwith %}
+
+        /*var messages = "{{ get_flashed_messages(category_filter=['update'])|safe }}";
+
+        if (typeof messages != 'undefined' && messages != '[]') {
+            var id = messages[0][1];
+            $('#editPillarLink').attr({'data-id': id, 'data-toggle':'modal', 'data-target':'#editModal'}).trigger("click");
+        };*/
+    });
+</script>
+<script>
+    /* Trigger flash modal */
+    $(document).ready(function() {
+        {% with messages = get_flashed_messages(category_filter=["upload"]) %}
+        {% if messages %}
+            //$("#createModal").modal();
+            $('#uploadPositionLink').attr({'data-toggle':'modal', 'data-target':'#createModal'}).trigger("click");
+        {% endif %}
+        {% endwith %}
+    });
+</script> {% endblock %}

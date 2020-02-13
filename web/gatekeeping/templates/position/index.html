@@ -1,0 +1,262 @@
+{% extends 'layout/main.html' %} {% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 pt-3 pb-2 mb-3">Positions</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group">
+                <a id="createPositionLink" class="action btn btn-outline-primary" href="" data-toggle="modal" data-target="#createModal">
+                <span data-feather="plus-square"></span>
+                New
+            </a>
+        </div>
+    </div>
+</div>
+<div class="table-responsive">
+    <table id="example" class="table table-striped table-bordered hover">
+        <thead>
+            <tr>
+                <th scope="col">Status</th>
+                <th scope="col">Recruitment Status</th>
+                <th scope="col">Number</th>
+                <th scope="col">Pillar</th>
+                <th scope="col">Company</th>
+                <th scope="col">Department</th>
+                <th scope="col">Function</th>
+                <th scope="col">Title</th>
+                <th scope="col">Functional Reporting Line</th>
+                <th scope="col">Disciplinary Reporting Line</th>
+                <th scope="col">Holder</th>
+                <th scope="col">Hours</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Salary</th>
+                <th scope="col">Social Security Contribution</th>
+                <th scope="col">Fringe Benefit</th>
+                <th scope="col">Performance Bonus</th>
+                <th scope="col">Super Bonus</th>
+                <th scope="col">Management Bonus</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in positions %}
+            <tr>
+                <td>{{ p['status'] }}</td>
+                <td>{{ p['recruitment_status'] }}</td>
+                <td>{{ p['number'] }}</td>
+                <td>{{ p['pillar'] }}</td>
+                <td>{{ p['company'] }}</td>
+                <td>{{ p['department'] }}</td>
+                <td>{{ p['function'] }}</td>
+                <td>{{ p['title'] }}</td>
+                <td>{{ p['functional_reporting_line'] }}</td>
+                <td>{{ p['disciplinary_reporting_line'] }}</td>
+                <td>{{ p['holder'] }}</td>
+                <td>{{ p['hours'] }}</td>
+                <td>{{ p['start_date'] }}</td>
+                <td>{{ p['end_date'] }}</td>
+                <td>&euro;{{ '%0.2f'| format(p['salary']|float * p['rate']) }}</td>
+                <td>&euro;{{ '%0.2f'| format(p['social_security_contribution']|float * p['rate']) }}</td>
+                <td>&euro;{{ '%0.2f'| format(p['fringe_benefit']|float * p['rate']) }}</td>
+                <td>{{ p['performance_bonus'] }}%</td>
+                <td>{{ p['super_bonus'] }}%</td>
+                <td>&euro;{{ p['management_bonus'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    {% for message in messages[0] %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Holy guacamole!</strong> {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    <form id="createPosition">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Number</label>
+                            <input type="text" name="number" class="form-control" id="exampleFormControlInput1" placeholder="XXX000">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Status</label>
+                            <select name="positionStatuses" class="form-control" id="exampleFormControlSelect1" readonly></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Recruitment Status</label>
+                            <select name="recruitmentStatuses" class="form-control" id="exampleFormControlSelect1"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Pillar</label>
+                            <select name="pillars" class="form-control" id="exampleFormControlSelect1"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Company</label>
+                            <select name="companies" class="form-control" id="exampleFormControlSelect1"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Department</label>
+                            <select name="departments" class="form-control" id="exampleFormControlSelect1"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Function</label>
+                            <select name="functions" class="form-control" id="exampleFormControlSelect1"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Title</label>
+                            <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Data Genius">
+                        </div>
+                        <div class="form-group">
+                            <label>Functional Reporting Line</label>
+                            <input type="text" name="functinalReportingLine" class="form-control" id="exampleFormControlInput1" placeholder="XXX000">
+                        </div>
+                        <div class="form-group">
+                            <label>Disciplinary Reporting Line</label>
+                            <input type="text" name="disciplinaryReportingLine" class="form-control" id="exampleFormControlInput1" placeholder="XXX000">
+                        </div>
+                        <div class="form-group">
+                            <label>Holder</label>
+                            <input type="text" name="holder" class="form-control" id="exampleFormControlInput1" placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label>Hours</label>
+                            <input type="number" name="hours" class="form-control" id="exampleFormControlInput1" placeholder="40">
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" name="startDate" min="2018-01-01" max="2022-12-31" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" name="endDate" min="2018-01-01" max="2022-12-31" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Salary</label>
+                            <input type="number" name="salary" class="form-control" id="exampleFormControlInput1" placeholder="&euro;20000">
+                        </div>
+                        <div class="form-group">
+                            <label>Social Security Contribution</label>
+                            <input type="number" name="socialSecurityContribution" class="form-control" id="exampleFormControlInput1" placeholder="&euro;3000">
+                        </div>
+                        <div class="form-group">
+                            <label>Fringe Benefit</label>
+                            <input type="number" name="fringeBenefit" class="form-control" id="exampleFormControlInput1" placeholder="&euro;40">
+                        </div>
+                        <div class="form-group">
+                            <label>Performance Bonus</label>
+                            <input type="number" name="performanceBonus" class="form-control" id="exampleFormControlInput1" placeholder="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Super Bonus</label>
+                            <input type="number" name="superBonus" class="form-control" id="exampleFormControlInput1" placeholder="15">
+                        </div>
+                        <div class="form-group">
+                            <label>Management Bonus</label>
+                            <input type="text" name="managementBonus" class="form-control" id="exampleFormControlInput1" placeholder="&euro;10000">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="createPositionButton" class="btn btn-primary" form="createPosition">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %} {% block script %}
+<script src="{{ url_for('static', filename='plugins/DataTables/datatables.min.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            scrollY: '50vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#createPositionLink').click(function (event) {
+            event.preventDefault();
+            var url = "{{ url_for('position.create') }}"
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (data){
+                    $('#createPosition').find('[name="companies"]').find('option').remove();
+                    $.each(data['companies'], function(key, value) {
+                        $('#createPosition').find('[name="companies"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="departments"]').find('option').remove();
+                    $.each(data['departments'], function(key, value) {
+                        $('#createPosition').find('[name="departments"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="pillars"]').find('option').remove();
+                    $.each(data['pillars'], function(key, value) {
+                        $('#createPosition').find('[name="pillars"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="functions"]').find('option').remove();
+                    $.each(data['functions'], function(key, value) {
+                        $('#createPosition').find('[name="functions"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition').find('[name="positionStatuses"]').find('option').remove();
+                    $.each(data['positionStatuses'], function(key, value) {
+                        $('#createPosition').find('[name="positionStatuses"]').append('<option>' + value + '</option>');
+                    });
+
+                    $('#createPosition')
+                    .find('[name="positionStatuses"]').val('Pending Approval').end();
+
+                    $('#createPosition').find('[name="recruitmentStatuses"]').find('option').remove();
+                    $.each(data['recruitmentStatuses'], function(key, value) {
+                        $('#createPosition').find('[name="recruitmentStatuses"]').append('<option>' + value + '</option>');
+                    });
+                },
+                error: function(e) {
+                    console.log(e);
+                }
+            });
+
+            $('#createPositionButton').click(function(event) {
+                event.preventDefault();
+                console.log($('#createPosition').serialize())
+                $.post(url, data=$('#createPosition').serialize(), function(data) {
+                    console.log(data.status)
+                    if (data.status == 'ok') {
+                        $('#createModal').modal('hide');
+                        location.reload();
+                    }
+                    else {
+                        $('#createModal .modal-content').html(data);
+                    }
+                });
+            })
+        })
+    });
+</script>{% endblock %}

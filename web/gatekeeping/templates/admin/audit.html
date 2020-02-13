@@ -1,0 +1,61 @@
+{% extends 'layout/dashboard.html' %}
+{% block header %}
+    <!-- DataTables core CSS-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/DataTables/dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/DataTables/dataTables.bootstrap4.min.css') }}">
+{% endblock %}
+
+{% block content %}
+    <h1 class="h2 pt-3 pb-2 mb-3 border-bottom">Audit Trail</h1>
+    <div class="table-responsive">
+      <table id="example" class="table table-striped table-bordered hover">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">User Agent</th>
+            <th scope="col">IP Address</th>
+            <th scope="col">Domain</th>
+            <th scope="col">User Id</th>
+            <th scope="col">Table</th>
+            <th scope="col">Row Id</th>
+            <th scope="col">Function</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in audits %}
+            <tr>
+                <td>{{ a['date'] }}</td>
+                <td>{{ a['user_agent'] }}</td>
+                <td>{{ a['ip_address'] }}</td>
+                <td>{{ a['domain'] }}</td>
+                <td>{{ a['user_id'] }}</td>
+                <td>{{ a['tbl'] }}</td>
+                <td>{{ a['row_id'] }}</td>
+                <td>{{ a['function'] }}</td>
+                <td>{{ a['action'] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='plugins/DataTables/datatables.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                scrollY:        '50vh',
+                scrollX: true,
+                scrollCollapse: true,
+                paging:         false
+            });
+        } );
+    </script>
+{% endblock %}

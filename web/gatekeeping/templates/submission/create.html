@@ -1,0 +1,356 @@
+{% extends 'layout/main.html' %} {% block header %}
+<h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %} {% block content %}
+<div class="container">
+  <div class="py-5 text-center">
+    <img class="d-block mx-auto mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="72" height="72">
+    <h2>Submission Request</h2>
+    <p class="lead">
+      Enter the position number which you would like to request changes to and the position details will be automatically displayed
+      on the right. Based on the reason chosen, the corresponding fields to be changed will be displayed. Once the changes are approved, they will
+      be applied on the effective date.
+    </p>
+  </div>
+  <div class="row">
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3">Submission</h4>
+      {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Holy guacamole!</strong> {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+      <form id="createSubmission" class="form-group needs-validation" method="POST">
+        <div class="mb-3">
+          <label for="positionId">Position ID</label>
+          <div class="input-group-prepend">
+            <input type="text" class="form-control" id="positionId" name="positionId" placeholder="XXX000" required>
+            <div class="invalid-feedback" style="width: 100%;">
+              Position Id is required.
+            </div>
+          </div>
+          <small id="passwordHelpBlock" class="form-text text-muted">
+            Enter a valid position number to view it on the right.
+          </small>
+        </div>
+        <div class="mb-3">
+          <label for="reason">Reason</label>
+          <div class="input-group-prepend">
+            <select name="reason" class="form-control" id="reason" required>
+              <option selected disabled hidden></option>
+              {% for sr in submission_reasons %}
+              <option>{{ sr.name }}</option>
+              {% endfor %}
+            </select>
+            <div class="invalid-feedback" style="width: 100%;">
+              Reason is required.
+            </div>
+          </div>
+          <small id="passwordHelpBlock" class="form-text text-muted">
+            Fields will display underneath depending on the reason you select.
+          </small>
+        </div>
+        <div id="positionTitle">
+          <div class="mb-3">
+            <label for="positionTitleField">Position Title</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="positionTitleField" name="positionTitleField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="functionalReportingLine">
+          <div class="mb-3">
+            <label for="change">Functional Reporting Line</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="functionalReportingLineField" name="functionalReportingLineField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="disciplinaryReportingLine">
+          <div class="mb-3">
+            <label for="change">Disciplinary Reporting Line</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="disciplinaryReportingLineField" name="disciplinaryReportingLineField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="positionHours">
+          <div class="mb-3">
+            <label for="change">Position Hours</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="positionHoursField" name="positionHoursField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="startDate">
+          <div class="mb-3">
+            <label for="change">Start Date</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="startDateField" name="startDateField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="annualSalary">
+          <div class="mb-3">
+            <label for="change">Annual Salary</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="annualSalaryField" name="annualSalaryField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="performanceBonus">
+          <div class="mb-3">
+            <label for="change">Performance Bonus</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="performanceBonusField" name="performanceBonusField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="superBonus">
+          <div class="mb-3">
+            <label for="change">Super Bonus</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="superBonusField" name="superBonusField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="managementBonus">
+          <div class="mb-3">
+            <label for="change">Management Bonus</label>
+            <div class="input-group-prepend">
+              <input type="text" class="form-control" id="managementBonusField" name="managementBonusField" placeholder="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Change is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="rationale">Rationale</label>
+          <div class="input-group-prepend">
+            <textarea rows="5" class="form-control" id="rationale" name="rationale" placeholder="" required></textarea>
+            <div class="invalid-feedback" style="width: 100%;">
+              Rationale is required.
+            </div>
+          </div>
+          <small id="passwordHelpBlock" class="form-text text-muted">
+            Your submission will be reviewed based on the rationale given.
+          </small>
+        </div>
+        <div class="mb-3">
+          <label for="effective-date">Effective Date</label>
+          <div class="input-group-prepend">
+            <input type="date" name="effectiveDate" min="2018-01-01" max="2022-12-31" class="form-control" id="effective-date" required>
+            <div class="invalid-feedback" style="width: 100%;">
+              Effective date is required.
+            </div>
+          </div>
+          <small id="passwordHelpBlock" class="form-text text-muted">
+            The changes will be applied on the selected date.
+          </small>
+        </div>
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+      </form>
+    </div>
+    <div id="positionForm" class="col-md-4 order-md-2 mb-4">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Position</span>
+      </h4>
+      <div class="mb-3">
+        <label for="disabledSelect">Status</label>
+        <select name="positionStatuses" class="form-control" id="disabledSelect" disabled>
+          <option></option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="disabledSelect">Recruitment Status</label>
+        <select name="recruitmentStatuses" class="form-control" id="disabledSelect" disabled>
+          <option></option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="disabledSelect">Pillar</label>
+        <select name="pillars" class="form-control" id="disabledSelect" disabled>
+          <option></option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="disabledSelect">Company</label>
+        <select name="companies" class="form-control" id="disabledSelect" disabled>
+          <option></option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="disabledSelect">Department</label>
+        <select name="departments" class="form-control" id="disabledSelect" disabled>
+          <option></option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="disabledSelect">Function</label>
+        <select name="functions" class="form-control" id="disabledSelect" disabled>
+          <option></option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlTextarea1">Title</label>
+        <input name="positionTitle" type="text" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Functional Reporting Line</label>
+        <input name="functionalReportingLine" type="text" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Disciplinary Reporting Line</label>
+        <input name="disciplinaryReportingLine" type="text" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Holder</label>
+        <input name="currentPositionHolder" type="text" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Hours</label>
+        <input name="hours" type="number" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Start Date</label>
+        <input name="startDate" type="text" name="effective-date" class="form-control" disabled>
+      </div>
+      <div class="mb-3">
+        <label>End Date</label>
+        <input name="endDate" type="test" name="effective-date" class="form-control" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Salary</label>
+        <input name="annualSalary" type="text" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Social Security Contributions</label>
+        <input name="socialSecurityContribution" type="text" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Fringe Benefit</label>
+        <input name="fringeBenefit" type="text" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Performance Bonus</label>
+        <input name="performanceBonus" type="number" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Super Bonus</label>
+        <input name="superBonus" type="number" class="form-control" id="disabledInput" disabled>
+      </div>
+      <div class="mb-3">
+        <label>Management Bonus</label>
+        <input name="managementBonus" type="text" class="form-control" id="disabledInput" disabled>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script>
+  $(document).ready(function () {
+    $('#positionId').keyup(function () {
+      var positionId = $(this).val()
+      if (positionId.length == 6 || positionId.length == 7) {
+        $.ajax({
+          url: "{{ url_for('position.view', id=-1) }}".replace("-1", positionId),
+          type: 'GET',
+          success: function (data) {
+            $('#positionForm')
+              .find('[name="positionStatuses"] option').text(data['status']).end()
+              .find('[name="recruitmentStatuses"] option').text(data['recruitment_status']).end()
+              .find('[name="pillars"] option').text(data['pillar']).end()
+              .find('[name="companies"] option').text(data['company']).end()
+              .find('[name="departments"] option').text(data['department']).end()
+              .find('[name="functions"] option').text(data['function']).end()
+              .find('[name="positionTitle"]').val(data['title']).end()
+              .find('[name="functionalReportingLine"]').val(data['functional_reporting_line']).end()
+              .find('[name="disciplinaryReportingLine"]').val(data['disciplinary_reporting_line']).end()
+              .find('[name="currentPositionHolder"]').val(data['holder']).end()
+              .find('[name="hours"]').val(data['hours']).end()
+              .find('[name="startDate"]').val(data['start_date']).end()
+              .find('[name="endDate"]').val(data['end_date']).end()
+              .find('[name="annualSalary"]').val(data['salary']).end()
+              .find('[name="socialSecurityContribution"]').val(data['social_security_contribution']).end()
+              .find('[name="fringeBenefit"]').val(data['fringe_benefit']).end()
+              .find('[name="performanceBonus"]').val(data['performance_bonus']).end()
+              .find('[name="superBonus"]').val(data['super_bonus']).end()
+              .find('[name="managementBonus"]').val(data['management_bonus']).end()
+          },
+          error: function (e) {
+            console.log(e);
+          }
+        });
+      }
+    });
+  });
+</script>
+<script>
+  //force refresh on page reload
+  $('#createSubmission')
+    .find('[name="reason"]').val('').end()
+
+  var hideAll = function () {
+    $('#positionTitle, #functionalReportingLine, #disciplinaryReportingLine, #positionHours, #startDate, #annualSalary, #performanceBonus, #superBonus, #managementBonus').hide();
+    $('#positionTitleField, #functionalReportingLineField, #disciplinaryReportingLineField, #positionHoursField, #startDateField, #annualSalaryField, #performanceBonusField, #superBonusField, #managementBonusField').prop('required', false);
+  }
+  hideAll();
+
+  $('#reason').change(function () {
+    var selected = this.value;
+    if (selected == "Backfill") {
+      hideAll();
+      $("#positionTitle, #positionHours, #annualSalary").show();
+    } else if (selected == "New Approved Position") {
+      hideAll();
+    } else if (selected == "Salary Change") {
+      hideAll();
+      $("#annualSalary").show()
+      $("#annualSalaryField").prop('required', true);
+    } else if (selected == "Job Title Change") {
+      hideAll();
+      $("#positionTitle").show()
+      $("#positionTitleField").prop('required', true);
+    } else if (selected == "Reporting Line Change") {
+      hideAll();
+      $("#functionalReportingLine, #disciplinaryReportingLine").show()
+      $("#functionalReportingLineField, #disciplinaryReportingLineField").prop('required', true);
+    } else if (selected == "Working Hours Change") {
+      hideAll();
+      $("#positionHours").show()
+      $("#positionHoursField").prop('required', true);
+    } else if (selected == "New Unapproved Position") {
+      hideAll();
+    } else if (selected == "Deactivate Position") {
+      hideAll();
+    }
+  });
+</script> {% endblock %}

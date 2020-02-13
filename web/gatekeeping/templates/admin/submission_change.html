@@ -1,0 +1,160 @@
+{% extends 'layout/dashboard.html' %} {% block header %}
+<!-- DataTables core CSS-->
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/DataTables/dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/DataTables/dataTables.bootstrap4.min.css') }}">
+{% endblock %} {% block content %}
+<h1>Submission Changes</h1>
+<div class="btn-group">
+    <a class="btn" href="javascript:history.back()">
+        <span data-feather="arrow-left"></span>
+        Back
+    </a>
+    <a class="btn" id="createSubmissionChangeLink" href="" data-id="{{ changes[0]['submission_id'] }}" data-toggle="modal" data-target="#createModal">
+        <span data-feather="plus-square"></span>
+        New
+    </a>
+</div>
+<div class="table-responsive">
+    <table id="example" class="table table-striped table-bordered hover">
+        <thead>
+            <tr>
+                <th scope="col">Submitted</th>
+                <th scope="col">Field</th>
+                <th scope="col">Change</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in changes %}
+            <tr>
+                <td>{{ c['submitted'] }}</td>
+                <td>{{ c['field'].replace('_', ' ').title() }}</td>
+                <td>{{ c['change'] }}</td>
+                <td>
+                    <a href="" id="editSubmissionChangeLink" data-submission-change-id="{{ c['id'] }}" data-submission-id="{{ c['submission_id'] }}" data-toggle="modal" data-target="#editModal">Edit</a>
+                    <a href="" id="deleteSubmissionChangeLink" data-submission-change-id="{{ c['id'] }}" data-submission-id="{{ c['submission_id'] }}" data-toggle="modal" data-target="#deleteModal">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editSubmissionChange">
+                    <div class="form-group">
+                        <label for="reason">Field</label>
+                        <input type="text" class="form-control" id="field" aria-describedby="emailHelp" name="field">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Change</label>
+                        <input type="text" class="form-control" id="change" aria-describedby="emailHelp" name="change">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="updateSubmissionChange" class="btn btn-primary" form="editSubmissionChange">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">Are you sure?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="deleteSubmissionChange" class="btn btn-primary">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block script %}
+<script src="{{ url_for('static', filename='plugins/DataTables/datatables.min.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            scrollY: '50vh',
+            scrollCollapse: true,
+            paging: false
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // add step button opens modal containing step form loaded via ajax
+        $('#editSubmissionChangeLink').click(function () {
+            var submission_id = $(this).attr('data-submission-id');
+            var submission_change_id = $(this).attr('data-submission-change-id');
+            var url = "{{ url_for('admin.submission-change-update', submission_id=-1, submission_change_id=-2, _external=True) }}".replace("-1", submission_id).replace("-2", submission_change_id);
+            console.log(url);
+
+            $.get(url, function (data) {
+                // Populate the form fields with the data returned from server
+                console.log(data)
+                $('#editSubmissionChange')
+                    .find('[name="field"]').val(data['submissionChange']['field']).end()
+                    .find('[name="change"]').val(data['submissionChange']['change']).end()
+
+                $('#updateSubmission').click(function (event) {
+                    event.preventDefault();
+                    console.log($('#editSubmission').serialize())
+                    $.post(url, data = $('#editSubmission').serialize(), function (data) {
+                        console.log(data.status)
+                        if (data.status == 'ok') {
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        }
+                        else {
+                            $('#editModal .modal-content').html(data);
+                        }
+                    });
+                })
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // add step button opens modal containing step form loaded via ajax
+        $('#deleteSubmissionLink').click(function () {
+            var submission_change_id = $(this).attr('data-submission-change-id');
+            var submission_id = $(this).attr('data-submission-id');
+            var url = "{{ url_for('admin.submission-change-delete', submission_id=-1, submission_change_id=-2, _external=True) }}".replace("-1", submission_id).replace("-2", submission_change_id);
+            console.log(url);
+
+            $('#deleteSubmission').click(function (event) {
+                event.preventDefault();
+                $.post(url, function (data) {
+                    console.log(data.status)
+                    if (data.status == 'ok') {
+                        $('#deleteModal').modal('hide');
+                        location.reload();
+                    }
+                });
+            })
+        });
+    });
+</script>{% endblock %}

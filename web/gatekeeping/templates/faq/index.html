@@ -1,0 +1,29 @@
+{% extends 'layout/main.html' %} {% block header %} {% endblock %} {% block content %}
+<h1 class="h2 pt-3 pb-2 mb-3 border-bottom">FAQ</h1>
+<div class="container">
+    <div class="panel-group" id="faqAccordion">
+        {% for question in page %}
+        <div class="panel panel-default ">
+            <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion"
+                data-target="#question{{ question['id'] }}">
+                <h4 class="panel-title">
+                    <a href="#" class="ing">Q: {{ question['title'] }}</a>
+                </h4>
+
+            </div>
+            <div id="question{{ question['id'] }}" class="panel-collapse collapse" style="height: 0px;">
+                <div class="panel-body">
+                    <h5>
+                        <span class="label label-primary">Answer</span>
+                    </h5>
+
+                    <p>
+                        {{ question['body']|safe }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

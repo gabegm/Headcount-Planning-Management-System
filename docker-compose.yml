@@ -1,0 +1,25 @@
+version: '3.2'
+services:
+  web:
+    build:
+      context: ./web
+    command: "gunicorn --log-level=debug --certfile cert.pem --keyfile key.pem -w 4 -b 0.0.0.0:5000 gatekeeping:create_app()"
+    ports:
+      - "5000:5000"
+      - "587:587"
+    volumes:
+      - type: volume
+        source: gatekeeping-data
+        target: /code
+
+  schedule:
+    build:
+      context: ./web
+    command: "python gatekeeping/tasks.py"
+    image: gatekeeping_web:latest
+    volumes:
+      - type: bind
+        source: gatekeeping-data
+        target: /code
+volumes:
+  gatekeeping-data:

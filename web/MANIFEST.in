@@ -1,0 +1,6 @@
+include LICENSE
+include gatekeeping/schema.sql
+graft gatekeeping/static
+graft gatekeeping/templates
+graft tests
+global-exclude *.pyc

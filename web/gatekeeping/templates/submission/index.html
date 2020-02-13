@@ -1,0 +1,189 @@
+{% extends 'layout/main.html' %} {% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 pt-3 pb-2 mb-3">Submissions</h1>
+</div>
+
+<div class="table-responsive">
+  <table id="example" class="table table-striped table-bordered hover">
+    <thead>
+      <tr>
+        <th scope="col">Submitted</th>
+        <th scope="col">Position Id</th>
+        <th scope="col">Effective Date</th>
+        <th scope="col">Gatekeeping</th>
+        <th scope="col">Reason</th>
+        <th scope="col">Status</th>
+        <th scope="col">Changes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in submissions %}
+      <tr>
+        <td>{{ s['submitted'] }}</td>
+        <td><a href="" id="viewPositionLink" data-id="{{ s['position_id'] }}" data-toggle="modal" data-target="#viewPositionModal">{{ s['position_id'] }}</a></td>
+        <td>{{ s['effective_date'] }}</td>
+        <td>{{ s['gatekeeping_date'] }}</td>
+        <td>{{ s['reason'] }}</td>
+        <td>{{ s['status'] }}</td>
+        <td>
+          <a href="{{ url_for('submission.change', id=s['id']) }}">{{ s['count'] }} Change(s)</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="viewPositionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="viewPosition">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Position</span>
+                    </h4>
+                    <div class="mb-3">
+                        <label for="disabledSelect">Position Status</label>
+                        <select name="positionStatuses" class="form-control" id="disabledSelect" disabled>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="disabledSelect">Recruitment Status</label>
+                        <select name="recruitmentStatuses" class="form-control" id="disabledSelect" disabled>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="disabledSelect">Pillar</label>
+                        <select name="pillars" class="form-control" id="disabledSelect" disabled>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="disabledSelect">Company</label>
+                        <select name="companies" class="form-control" id="disabledSelect" disabled>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="disabledSelect">Department</label>
+                        <select name="departments" class="form-control" id="disabledSelect" disabled>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="disabledSelect">Function</label>
+                        <select name="functions" class="form-control" id="disabledSelect" disabled>
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1">Position Title</label>
+                        <input name="positionTitle" type="text" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Functional Reporting Line</label>
+                        <input name="functionalReportingLine" type="text" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Disciplinary Reporting Line</label>
+                        <input name="disciplinaryReportingLine" type="text" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Current Position Holder</label>
+                        <input name="currentPositionHolder" type="text" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Hours</label>
+                        <input name="hours" type="number" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Start Date</label>
+                        <input name="startDate" type="text" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>End Date</label>
+                        <input name="endDate" type="text" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Annual Salary</label>
+                        <input name="annualSalary" type="text" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Performance Bonus</label>
+                        <input name="performanceBonus" type="number" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Super Bonus</label>
+                        <input name="superBonus" type="number" class="form-control" id="disabledInput" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label>Management Bonus</label>
+                        <input name="managementBonus" type="text" class="form-control" id="disabledInput" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block script %}
+<script src="{{ url_for('static', filename='plugins/DataTables/datatables.min.js') }}"></script>
+<script>
+  $(document).ready(function () {
+    $('#example').DataTable({
+      dom: 'Bfrtip',
+      buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ],
+      scrollY: '50vh',
+      scrollCollapse: true,
+      paging: false
+    });
+  });
+</script>
+<script>
+    $(document).ready(function () {
+        // add step button opens modal containing step form loaded via ajax
+        $('body').on('click', '#viewPositionLink', function () {
+            var id = $(this).attr('data-id');
+            var url = "{{ url_for('position.view', id=-1, _external=True) }}".replace("-1", id);
+            console.log(url);
+
+            $.get(url, function (data) {
+                // Populate the form fields with the data returned from server
+                console.log(data)
+                $('#viewPosition')
+                    .find('[name="positionStatuses"] option').text(data['status']).end()
+                    .find('[name="recruitmentStatuses"] option').text(data['recruitment_status']).end()
+                    .find('[name="pillars"] option').text(data['pillar']).end()
+                    .find('[name="companies"] option').text(data['company']).end()
+                    .find('[name="departments"] option').text(data['department']).end()
+                    .find('[name="functions"] option').text(data['function']).end()
+                    .find('[name="positionTitle"]').val(data['title']).end()
+                    .find('[name="functionalReportingLine"]').val(data['functional_reporting_line']).end()
+                    .find('[name="disciplinaryReportingLine"]').val(data['disciplinary_reporting_line']).end()
+                    .find('[name="currentPositionHolder"]').val(data['holder']).end()
+                    .find('[name="hours"]').val(data['hours']).end()
+                    .find('[name="startDate"]').val(data['start_date']).end()
+                    .find('[name="endDate"]').val(data['end_date']).end()
+                    .find('[name="annualSalary"]').val(data['salary']).end()
+                    .find('[name="performanceBonus"]').val(data['performance_bonus']).end()
+                    .find('[name="superBonus"]').val(data['super_bonus']).end()
+                    .find('[name="managementBonus"]').val(data['management_bonus']).end()
+            });
+        });
+    });
+</script>
+{% endblock %}

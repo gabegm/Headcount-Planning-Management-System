@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title>Signin Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='signin.css') }}">
+</head>
+<body class="text-center">
+    {% block content %}{% endblock %}
+  <!-- Bootstrap core JavaScript
+      ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script  src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+    <script  src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script  src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    {% block script %}{% endblock %}
+</body>
+</html>
