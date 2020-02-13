@@ -3,6 +3,8 @@ Gatekeeping
 
 Gatekeeping Flask app.
 
+![alt text](gallery/login.png "Login page")
+
 ![alt text](gallery/main.png "Homepage")
 
 ![alt text](gallery/admin.png "Admin dashboard")
