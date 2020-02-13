@@ -20,7 +20,7 @@ class MyProvider(BaseProvider):
         return random.choice(recruitment_statuses)
     
     def pillar(self):
-        pillars = ['Online', 'Protech', 'Retail', 'Business Framework']
+        pillars = ['Online', 'Tech', 'Retail', 'Business Framework']
         
         # We select a random destination from the list and return it
         return random.choice(pillars)
@@ -32,13 +32,13 @@ class MyProvider(BaseProvider):
         return random.choice(companies)
     
     def department(self):
-        departments = ['Acquisition Marketing - Online', 'Admin', 'Bookmaking', 'Business Development', 'C-Level', 'Compliance & Regulations', 'Customer Services', 'Finance', 'Gaming - Online', 'Graduates - Trainees', 'HR', 'Legal', 'Marketing Intelligence', 'Payments & Fraud Services', 'PMO', 'Protech', 'Protech - Data', 'Retail', 'Retail Services & Legal Affairs', 'Retention Marketing - Online', 'GM Gibraltar', 'TRServ', 'TRSys', 'TSA EAST - Retail', 'TSA North - Retail']
+        departments = ['Acquisition Marketing - Online', 'Admin', 'Bookmaking', 'Business Development', 'C-Level', 'Compliance & Regulations', 'Customer Services', 'Finance', 'Gaming - Online', 'Graduates - Trainees', 'HR', 'Legal', 'Marketing Intelligence', 'Payments & Fraud Services', 'PMO', 'Tech', 'Tech - Data', 'Retail', 'Retail Services & Legal Affairs', 'Retention Marketing - Online', 'GM Gibraltar', 'TRServ', 'TRSys', 'TSA EAST - Retail', 'TSA North - Retail']
         
         # We select a random destination from the list and return it
         return random.choice(departments)
     
     def function(self):
-        functions = ['Acquisition Marketing', 'Bookmaking Colombia', 'Bookmaking Croatia', 'Bookmaking Malta', 'Business Development', 'Compliance & Regulations', 'Corp. Communications', 'Customer Services', 'Executives', 'Finance', 'Gaming', 'HR', 'Legal', 'Marketing Intelligence', 'Office Services', 'Payments & Fraud Services', 'PMO', 'Protech', 'Protech - Bookmaking', 'Protech - CTP', 'Protech - Data', 'Protech - Digital Tech', 'Protech - Infrastructure', 'Protech - Retail Tech', 'Protech - Tech Digital', 'Retail Services', 'Retail Services & Legal Affairs', 'Retail Systems', 'Retention Marketing', 'Sponsoring', 'GM Gibraltar', 'TSA East', 'TSA North']
+        functions = ['Acquisition Marketing', 'Bookmaking Colombia', 'Bookmaking Croatia', 'Bookmaking Malta', 'Business Development', 'Compliance & Regulations', 'Corp. Communications', 'Customer Services', 'Executives', 'Finance', 'Gaming', 'HR', 'Legal', 'Marketing Intelligence', 'Office Services', 'Payments & Fraud Services', 'PMO', 'Tech', 'Tech - Bookmaking', 'Tech - Platform', 'Tech - Data', 'Tech - Digital Tech', 'Tech - Infrastructure', 'Tech - Retail Tech', 'Tech - Tech Digital', 'Retail Services', 'Retail Services & Legal Affairs', 'Retail Systems', 'Retention Marketing', 'Sponsoring', 'GM Gibraltar', 'TSA East', 'TSA North']
         
         # We select a random destination from the list and return it
         return random.choice(functions)

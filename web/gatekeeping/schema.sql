@@ -255,7 +255,7 @@ INSERT INTO company (name, exchange_rate_id)
 VALUES ('Maritimo D', 1);
 
 INSERT INTO department (name)
-VALUES ('Protech');
+VALUES ('Tech');
 
 INSERT INTO department (name)
 VALUES ('Retention Marketing - Online');
@@ -321,7 +321,7 @@ INSERT INTO department (name)
 VALUES ('GM Gibraltar');
 
 INSERT INTO department (name)
-VALUES ('Protech - Data');
+VALUES ('Tech - Data');
 
 INSERT INTO department (name)
 VALUES ('TSA EAST - Retail');
@@ -369,7 +369,7 @@ INSERT INTO pillar (name)
 VALUES ('Business Framework');
 
 INSERT INTO pillar (name)
-VALUES ('Protech');
+VALUES ('Tech');
 
 INSERT INTO pillar (name)
 VALUES ('Online');
@@ -411,7 +411,7 @@ INSERT INTO submission_reason (name)
 VALUES ('Deactivate Position');
 
 INSERT INTO function (name)
-VALUES ('Protech - Infrastructure');
+VALUES ('Tech - Infrastructure');
 
 INSERT INTO function (name)
 VALUES ('Retention Marketing');
@@ -429,22 +429,22 @@ INSERT INTO function (name)
 VALUES ('Retail Services');
 
 INSERT INTO function (name)
-VALUES ('Protech - CTP');
+VALUES ('Tech - Platform');
 
 INSERT INTO function (name)
-VALUES ('Protech - Digital Tech');
+VALUES ('Tech - Digital Tech');
 
 INSERT INTO function (name)
-VALUES ('Protech - Tech Digital');
+VALUES ('Tech - Tech Digital');
 
 INSERT INTO function (name)
 VALUES ('TSA East');
 
 INSERT INTO function (name)
-VALUES ('Protech');
+VALUES ('Tech');
 
 INSERT INTO function (name)
-VALUES ('Protech - Bookmaking');
+VALUES ('Tech - Bookmaking');
 
 INSERT INTO function (name)
 VALUES ('Finance');
@@ -498,10 +498,10 @@ INSERT INTO function (name)
 VALUES ('GM Gibraltar');
 
 INSERT INTO function (name)
-VALUES ('Protech - Data');
+VALUES ('Tech - Data');
 
 INSERT INTO function (name)
-VALUES ('Protech - Retail Tech');
+VALUES ('Tech - Retail Tech');
 
 INSERT INTO function (name)
 VALUES ('Retail Systems');
