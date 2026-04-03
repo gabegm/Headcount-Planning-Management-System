@@ -41,9 +41,9 @@ server:
     enabled: ${SSL_ENABLED:false}
     key-store: ${SSL_KEYSTORE:}
     key-store-password: ${SSL_KEYSTORE_PASSWORD:}
-
-session:
-  timeout: 20m
+  servlet:
+    session:
+      timeout: 20m
 
 logging:
   level:
