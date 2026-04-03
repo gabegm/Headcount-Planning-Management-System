@@ -1,31 +1,42 @@
 package com.gaucimaistre.headcount.service;
 
 import com.gaucimaistre.headcount.model.Company;
+import com.gaucimaistre.headcount.repository.CompanyRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CompanyService {
 
+    private final CompanyRepository companyRepository;
+
     public List<Company> findAll() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return companyRepository.findAll();
     }
 
     public Optional<Company> findById(int id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return companyRepository.findById(id);
     }
 
-    public void save(Company company) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public int save(Company company) {
+        return companyRepository.save(company);
+    }
+
+    public void update(Company company) {
+        companyRepository.update(company);
     }
 
     public void update(int id, Company company) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        companyRepository.update(company);
     }
 
     public void delete(int id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        companyRepository.delete(id);
     }
 }

@@ -1,31 +1,42 @@
 package com.gaucimaistre.headcount.service;
 
 import com.gaucimaistre.headcount.model.ExchangeRate;
+import com.gaucimaistre.headcount.repository.ExchangeRateRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class ExchangeRateService {
 
+    private final ExchangeRateRepository exchangeRateRepository;
+
     public List<ExchangeRate> findAll() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return exchangeRateRepository.findAll();
     }
 
     public Optional<ExchangeRate> findById(int id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return exchangeRateRepository.findById(id);
     }
 
-    public void save(ExchangeRate exchangeRate) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public int save(ExchangeRate exchangeRate) {
+        return exchangeRateRepository.save(exchangeRate);
+    }
+
+    public void update(ExchangeRate exchangeRate) {
+        exchangeRateRepository.update(exchangeRate);
     }
 
     public void update(int id, ExchangeRate exchangeRate) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        exchangeRateRepository.update(exchangeRate);
     }
 
     public void delete(int id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        exchangeRateRepository.delete(id);
     }
 }

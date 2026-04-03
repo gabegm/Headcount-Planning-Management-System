@@ -1,70 +1,58 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title th:text="${pageTitle != null ? pageTitle + ' – Gatekeeping' : 'Gatekeeping'}">Gatekeeping</title>
+    <title layout:title-pattern="$CONTENT_TITLE - Gatekeeping">Gatekeeping</title>
 
     <!-- Bootstrap 5.3 -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
           crossorigin="anonymous"/>
-
     <!-- Bootstrap Icons 1.11 -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
-
-    <!-- DataTables 2 + Bootstrap 5 theme -->
-    <link rel="stylesheet"
-          href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.min.css"/>
-    <link rel="stylesheet"
-          href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.min.css"/>
-
-    <!-- Quill 2 (rich text — loaded only on pages that need it) -->
-    <link th:if="${quillEnabled}"
-          rel="stylesheet"
+    <!-- DataTables 2 -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.min.css"/>
+    <!-- Quill (conditional) -->
+    <link th:if="${quillEnabled}" rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"/>
-
     <!-- App styles -->
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 
-    <th:block th:replace="~{::head-extra}"/>
+    <th:block layout:fragment="head-extra"/>
 </head>
 <body>
 
-<!-- ── Top navigation bar ───────────────────────────────────────────────── -->
+<!-- ── Top navbar ────────────────────────────────────────────────────────── -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
             <img th:src="@{/img/logo.png}" alt="Gatekeeping" height="30" class="me-2"/>
             Gatekeeping
         </a>
-
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarMain"
                 aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
-
                 <li class="nav-item">
-                    <a class="nav-link"
-                       th:classappend="${#mvc.uri('HomeController#index') != null and #strings.contains(#httpServletRequest.requestURI, '/') and #httpServletRequest.requestURI == '/'} ? 'active'"
-                       th:href="@{/}">
+                    <a class="nav-link" th:href="@{/}"
+                       th:classappend="${activePage == 'home'} ? 'active'">
                         <i class="bi bi-house-door"></i> Home
                     </a>
                 </li>
-
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle"
-                       th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/submission')} ? 'active'"
-                       href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
+                       th:classappend="${activePage == 'submission'} ? 'active'"
+                       href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-file-earmark-text"></i> Submissions
                     </a>
                     <ul class="dropdown-menu">
@@ -72,43 +60,32 @@
                         <li><a class="dropdown-item" th:href="@{/submission/create}">Create</a></li>
                     </ul>
                 </li>
-
                 <li class="nav-item">
-                    <a class="nav-link"
-                       th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/position')} ? 'active'"
-                       th:href="@{/position}">
+                    <a class="nav-link" th:href="@{/position}"
+                       th:classappend="${activePage == 'position'} ? 'active'">
                         <i class="bi bi-person-badge"></i> Positions
                     </a>
                 </li>
-
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link"
-                       th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin')} ? 'active'"
-                       th:href="@{/admin}">
+                    <a class="nav-link" th:href="@{/admin}"
+                       th:classappend="${activePage == 'admin'} ? 'active'">
                         <i class="bi bi-speedometer2"></i> Admin
                     </a>
                 </li>
-
             </ul>
-
             <ul class="navbar-nav ms-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/help}">
-                        <i class="bi bi-question-circle"></i> Help
-                    </a>
+                    <a class="nav-link" th:href="@{/help}"><i class="bi bi-question-circle"></i> Help</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/faq}">
-                        <i class="bi bi-chat-square-text"></i> FAQ
-                    </a>
+                    <a class="nav-link" th:href="@{/faq}"><i class="bi bi-chat-square-text"></i> FAQ</a>
                 </li>
                 <li class="nav-item">
                     <form th:action="@{/logout}" method="post" class="d-inline">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <button type="submit" class="btn btn-link nav-link">
                             <i class="bi bi-box-arrow-right"></i>
-                            Log out
-                            (<span sec:authentication="name">user</span>)
+                            Log out (<span sec:authentication="name">user</span>)
                         </button>
                     </form>
                 </li>
@@ -117,7 +94,7 @@
     </div>
 </nav>
 
-<!-- ── Flash messages ───────────────────────────────────────────────────── -->
+<!-- ── Flash messages ─────────────────────────────────────────────────────── -->
 <div class="container-fluid mt-1" th:if="${successMessage != null or errorMessage != null}">
     <div th:if="${successMessage}"
          class="alert alert-success alert-dismissible fade show" role="alert">
@@ -133,28 +110,21 @@
     </div>
 </div>
 
-<!-- ── Page content ─────────────────────────────────────────────────────── -->
+<!-- ── Page content ───────────────────────────────────────────────────────── -->
 <main class="container-fluid py-3">
-    <th:block th:replace="~{::main-content}"/>
+    <layout:fragment name="content">
+        <!-- page content inserted here -->
+    </layout:fragment>
 </main>
 
-<!-- ── Scripts ──────────────────────────────────────────────────────────── -->
-
-<!-- Bootstrap 5.3 bundle (includes Popper) -->
+<!-- ── Scripts ────────────────────────────────────────────────────────────── -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmGAbCGtHs5kFcF91ZjIQnW/oIQ"
         crossorigin="anonymous"></script>
-
-<!-- Alpine.js 3 (defer — initialises after DOM ready) -->
-<script defer
-        src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
-
-<!-- htmx 2 -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js"
         integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
         crossorigin="anonymous"></script>
-
-<!-- DataTables 2 + Bootstrap 5 + Buttons -->
 <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.min.js"></script>
@@ -164,22 +134,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
-
-<!-- Plotly (loaded only on dashboard pages) -->
-<script th:if="${plotlyEnabled}"
-        src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-
-<!-- Quill 2 (loaded only on CMS editor pages) -->
-<script th:if="${quillEnabled}"
-        src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-
-<!-- Configure htmx to send CSRF header with every request -->
+<script th:if="${plotlyEnabled}" src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script th:if="${quillEnabled}" src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script th:inline="javascript">
     document.addEventListener('htmx:configRequest', function (evt) {
         evt.detail.headers['X-CSRF-TOKEN'] = /*[[${_csrf.token}]]*/ '';
     });
+    window.defaultDataTableConfig = {
+        layout: { topStart: 'buttons' },
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        scrollY: '50vh', scrollCollapse: true, paging: false
+    };
 </script>
-
-<th:block th:replace="~{::scripts-extra}"/>
+<layout:fragment name="scripts-extra"/>
 </body>
 </html>

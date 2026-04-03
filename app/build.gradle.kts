@@ -55,6 +55,12 @@ dependencies {
     // CSV import
     implementation("com.opencsv:opencsv:5.9")
 
+    // HTML sanitisation
+    implementation("org.owasp.antisamy:antisamy:1.7.7")
+
+    // Thymeleaf Layout Dialect — layout:decorate (equivalent to Jinja2 {% extends %})
+    implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.4.0")
+
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

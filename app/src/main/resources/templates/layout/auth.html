@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title th:text="${pageTitle != null ? pageTitle + ' – Gatekeeping' : 'Gatekeeping'}">Gatekeeping</title>
-
+    <title layout:title-pattern="$CONTENT_TITLE - Gatekeeping">Gatekeeping</title>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
@@ -14,25 +15,16 @@
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body class="bg-light">
-
 <main class="d-flex align-items-center justify-content-center min-vh-100">
     <div class="form-signin w-100 text-center">
         <a th:href="@{/}">
             <img th:src="@{/img/logo.png}" alt="Gatekeeping" height="60" class="mb-4"/>
         </a>
-
-        <!-- Flash messages -->
-        <div th:if="${errorMessage}"
-             class="alert alert-warning alert-dismissible fade show text-start" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-1"></i>
-            <span th:text="${errorMessage}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-        <th:block th:replace="~{::auth-content}"/>
+        <layout:fragment name="content">
+            <!-- auth page content -->
+        </layout:fragment>
     </div>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmGAbCGtHs5kFcF91ZjIQnW/oIQ"
         crossorigin="anonymous"></script>

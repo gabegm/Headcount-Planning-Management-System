@@ -1,6 +1,9 @@
 package com.gaucimaistre.headcount.service;
 
 import com.gaucimaistre.headcount.model.Position;
+import com.gaucimaistre.headcount.model.enums.UserType;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -8,29 +11,36 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class AdminPositionService {
 
+    private final PositionService positionService;
+    private final CsvImportService csvImportService;
+
     public List<Position> findAll() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return positionService.findAll(0, UserType.ADMIN);
     }
 
     public Optional<Position> findById(int id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return positionService.findById(id);
     }
 
     public void save(Position position) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        positionService.save(position);
     }
 
     public void update(int id, Position position) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        positionService.update(position);
     }
 
     public void delete(int id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        positionService.delete(id);
     }
 
     public String importFromCsv(MultipartFile file) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        CsvImportService.ImportResult result = csvImportService.importPositions(file, false);
+        return "Imported: %d, Skipped: %d, Errors: %d".formatted(
+                result.imported(), result.skipped(), result.errors().size());
     }
 }

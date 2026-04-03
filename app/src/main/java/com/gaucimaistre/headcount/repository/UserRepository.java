@@ -168,4 +168,8 @@ public class UserRepository {
                 """;
         jdbc.update(sql, new MapSqlParameterSource("userId", userId));
     }
+
+    public void clearAllPasswordResetTokens() {
+        jdbc.update("UPDATE \"user\" SET password_reset_token = NULL", new MapSqlParameterSource());
+    }
 }
