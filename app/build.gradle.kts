@@ -64,10 +64,14 @@ dependencies {
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Testcontainers shaded docker-java reads 'api.version' system property
+    // Docker 29+ requires minimum API 1.44; ensure the client sends a supported version
+    systemProperty("api.version", "1.47")
 }

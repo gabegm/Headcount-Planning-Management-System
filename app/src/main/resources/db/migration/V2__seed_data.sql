@@ -151,6 +151,6 @@ INSERT INTO submission_reason (name) VALUES
 -- Password is a bcrypt hash of 'changeme' — must be reset on first deploy.
 INSERT INTO "user" (email, password, type, active) VALUES
     ('gabriel.gaucimaistre@gaucimaistre.com',
-     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+     '$2a$10$zsS9Kw/l0CvDG6yMWA2EC.tzqqhn0prcD85Uruh.exJuPg9fRlUt6',
      'ADMIN',
      TRUE);

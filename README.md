@@ -1,93 +1,173 @@
-Gatekeeping
-======
+# Gatekeeping — Headcount Planning & Management System
 
-Gatekeeping Flask app.
+An internal enterprise tool for managing job positions, headcount budgets,
+submission/approval workflows, org hierarchy, and analytics dashboards.
 
-![alt text](gallery/login.png "Login page")
+![Login page](gallery/login.png)
+![Homepage](gallery/main.png)
+![Admin dashboard](gallery/admin.png)
+![Audit Trail](gallery/audit.png)
+![Position status](gallery/position-status.png)
+![Submission requests](gallery/submission-request.png)
 
-![alt text](gallery/main.png "Homepage")
-
-![alt text](gallery/admin.png "Admin dashboard")
-
-![alt text](gallery/audit.png "Audit Trail")
-
-![alt text](gallery/position-status.png "Position status")
-
-![alt text](gallery/submission-request.png "Submission requests")
-
-Install
--------
-
-**Be sure to use the same version of the code as the version of the docs
-you're reading.** You probably want the latest tagged version, but the
-default Git version is the master branch. ::
-
-    # clone the repository
-    git clone https://github.com/gabegm/gatekeeping
-    cd gatekeeping
-
-Create a virtualenv and activate it::
-
-    python -m venv ~/envs/gatekeeping
-    source ~/envs/gatekeeping/bin/activate
-    pip install -r web/requirements.txt
-
-Add email password::
-
-    echo "mail = ('mail@domain.com', 'pass')" > web/gatekeeping/keys.py
-
-Generate SSL certificate::
-
-    sudo apt-get openssl
-    openssl req -x509 -newkey rsa:4096 -nodes -out web/cert.pem -keyout web/key.pem -days 365 && \
-
-Install gatekeeping::
-
-    pip install -e .
-
-Development
 ---
 
-::
+## Tech Stack
 
-    export FLASK_APP=gatekeeping
-    export FLASK_ENV=development
-    flask init-db # first run
-    flask run
+| Layer | Technology |
+|-------|-----------|
+| Language | Java 21 (LTS) |
+| Framework | Spring Boot 3.5.3 |
+| Templates | Thymeleaf 3 + Layout Dialect |
+| Frontend | Bootstrap 5.3, Alpine.js 3, htmx 2, DataTables 2, Quill 2 |
+| Database | PostgreSQL 17 |
+| Migrations | Flyway |
+| Data access | Spring JDBC (`NamedParameterJdbcTemplate`) — no ORM |
+| Security | Spring Security 6 (form login, BCrypt, CSRF, role hierarchy) |
+| Email | Spring Mail (SMTP) |
+| Scheduling | Spring `@Scheduled` |
+| Build | Gradle 8 (Kotlin DSL) |
+| Container | Docker + Docker Compose |
+| Tests | JUnit 5, Testcontainers, MockMvc, Mockito |
 
-Open <http://127.0.0.1:5000> in a browser.
+> **Legacy branch:** The original Flask 1.1 / SQLite application is preserved on
+> the `master` branch for reference.
 
-Test
-----
+---
 
-::
+## Prerequisites
 
-    pip install '.[test]'
-    pytest
+- Java 21+
+- Docker & Docker Compose
 
-Run with coverage report::
+---
 
-    coverage run -m pytest
-    coverage report
-    coverage html  # open htmlcov/index.html in a browser
+## Quick Start (Docker)
 
-Production
-----
+```bash
+# Clone the repository and switch to the Spring Boot branch
+git clone https://github.com/gabegm/Headcount-Planning-Management-System
+cd Headcount-Planning-Management-System
+git checkout migration/spring-boot
 
-::
+# Start PostgreSQL + the application
+docker compose up --build
+```
 
-    export FLASK_APP=gatekeeping
-    flask init-db # first run
-    gunicorn -w 4 -b 0.0.0.0:5000 'gatekeeping:create_app()'
+Open <http://localhost:8080> in a browser.
 
-Open <http://127.0.0.1:5000> in a browser.
+Default admin credentials (change after first login):
 
-Docker
-----
+| Field    | Value                                   |
+|----------|-----------------------------------------|
+| Email    | `gabriel.gaucimaistre@gaucimaistre.com` |
+| Password | `changeme`                              |
 
-::
+---
 
-    docker-compose build --build-arg BUILD_DB=false # true if first run
-    docker-compose up
+## Local Development
 
-Open <http://127.0.0.1:5000> in a browser.
+### 1. Start the database
+
+```bash
+docker compose up postgres -d
+```
+
+### 2. Configure environment
+
+The application reads connection details from environment variables. Copy and
+adjust the defaults:
+
+```bash
+export DB_URL=jdbc:postgresql://localhost:5432/headcount
+export DB_USERNAME=headcount
+export DB_PASSWORD=headcount
+export MAIL_HOST=localhost
+export MAIL_PORT=1025
+export MAIL_PASSWORD=
+```
+
+Or override via `application.yml` for local use.
+
+### 3. Run the application
+
+```bash
+cd app
+JAVA_HOME=<path-to-java-21> ./gradlew bootRun
+```
+
+Open <http://localhost:8080> in a browser.
+
+---
+
+## Building
+
+```bash
+cd app
+./gradlew build
+```
+
+The fat JAR is produced at `app/build/libs/headcount-*.jar`.
+
+---
+
+## Running Tests
+
+Tests use [Testcontainers](https://testcontainers.com/) — Docker must be
+running.
+
+```bash
+cd app
+./gradlew test
+```
+
+Test categories:
+
+| Category | What it covers |
+|----------|---------------|
+| Repository tests | JDBC queries against a real PostgreSQL container |
+| Controller tests | Full HTTP request/response via MockMvc |
+| Security tests | Auth, access control, CSRF enforcement |
+| Service unit tests | Business logic with Mockito mocks |
+
+---
+
+## Project Structure
+
+```
+app/
+├── src/main/java/com/gaucimaistre/headcount/
+│   ├── config/          # SecurityConfig
+│   ├── controller/      # MVC controllers (Auth, Home, Position, Submission, Admin, …)
+│   ├── mapper/          # JDBC RowMappers
+│   ├── model/           # Java records (domain model) + enums
+│   ├── repository/      # JDBC repositories (NamedParameterJdbcTemplate)
+│   ├── scheduler/       # @Scheduled background tasks
+│   ├── security/        # UserDetails + UserDetailsService
+│   └── service/         # Business logic layer
+├── src/main/resources/
+│   ├── db/migration/    # Flyway V1 (schema) + V2 (seed data)
+│   ├── templates/       # Thymeleaf templates
+│   │   ├── layout/      # Base layouts (main, admin, auth)
+│   │   ├── admin/       # 17 admin pages
+│   │   ├── auth/        # Login, register, password reset
+│   │   ├── position/    # Position list + detail
+│   │   └── submission/  # Submission list, create, change
+│   └── static/          # CSS, images
+└── src/test/            # Integration + unit tests
+```
+
+---
+
+## Configuration Reference
+
+Key properties in `application.yml` (all overridable via environment variables):
+
+| Property | Env var | Default |
+|----------|---------|---------|
+| `spring.datasource.url` | `DB_URL` | `jdbc:postgresql://localhost:5432/headcount` |
+| `spring.datasource.username` | `DB_USERNAME` | `headcount` |
+| `spring.datasource.password` | `DB_PASSWORD` | `headcount` |
+| `spring.mail.host` | `MAIL_HOST` | `localhost` |
+| `spring.mail.port` | `MAIL_PORT` | `1025` |
+| `server.servlet.session.timeout` | — | `20m` |
