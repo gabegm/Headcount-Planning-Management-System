@@ -94,7 +94,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/submission}"
+                        <a class="nav-link" th:href="@{/admin/submissions}"
                            th:classappend="${activePage == 'submission'} ? 'active'">
                             <i class="bi bi-file-earmark-text"></i> Submissions
                         </a>
@@ -106,7 +106,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/position}"
+                        <a class="nav-link" th:href="@{/admin/positions}"
                            th:classappend="${activePage == 'position'} ? 'active'">
                             <i class="bi bi-person-badge"></i> Positions
                         </a>
@@ -116,37 +116,37 @@
                 <h6 class="sidebar-heading px-3 mt-3 mb-1 text-muted">Organisation</h6>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/user}"
+                        <a class="nav-link" th:href="@{/admin/users}"
                            th:classappend="${activePage == 'user'} ? 'active'">
                             <i class="bi bi-people"></i> Users
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/pillar}"
+                        <a class="nav-link" th:href="@{/admin/pillars}"
                            th:classappend="${activePage == 'pillar'} ? 'active'">
                             <i class="bi bi-columns-gap"></i> Pillars
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/company}"
+                        <a class="nav-link" th:href="@{/admin/companies}"
                            th:classappend="${activePage == 'company'} ? 'active'">
                             <i class="bi bi-building"></i> Companies
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/department}"
+                        <a class="nav-link" th:href="@{/admin/departments}"
                            th:classappend="${activePage == 'department'} ? 'active'">
                             <i class="bi bi-diagram-3"></i> Departments
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/function}"
+                        <a class="nav-link" th:href="@{/admin/functions}"
                            th:classappend="${activePage == 'function'} ? 'active'">
                             <i class="bi bi-briefcase"></i> Functions
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/exchange-rate}"
+                        <a class="nav-link" th:href="@{/admin/exchange-rates}"
                            th:classappend="${activePage == 'exchangeRate'} ? 'active'">
                             <i class="bi bi-currency-exchange"></i> Exchange Rates
                         </a>
@@ -156,13 +156,13 @@
                 <h6 class="sidebar-heading px-3 mt-3 mb-1 text-muted">Configuration</h6>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/submission/status}"
+                        <a class="nav-link" th:href="@{/admin/submission-statuses}"
                            th:classappend="${activePage == 'submissionStatus'} ? 'active'">
                             <i class="bi bi-tag"></i> Submission Statuses
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/position/status}"
+                        <a class="nav-link" th:href="@{/admin/position-statuses}"
                            th:classappend="${activePage == 'positionStatus'} ? 'active'">
                             <i class="bi bi-tag-fill"></i> Position Statuses
                         </a>

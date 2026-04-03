@@ -52,21 +52,21 @@ public class AdminController {
     // User management
     // -------------------------------------------------------------------------
 
-    @GetMapping("/user")
+    @GetMapping("/users")
     public String users(Model model) {
         model.addAttribute("users", userService.findAll());
         model.addAttribute("functions", functionService.findAll());
         return "admin/user";
     }
 
-    @GetMapping("/user/{id}/form")
+    @GetMapping("/users/{id}/edit-form")
     public String userForm(@PathVariable int id, Model model) {
         userService.findById(id).ifPresent(u -> model.addAttribute("user", u));
         model.addAttribute("functions", functionService.findAll());
         return "admin/user :: editForm";
     }
 
-    @PostMapping("/user/{id}/update")
+    @PostMapping("/users/{id}/update")
     public String updateUser(@PathVariable int id,
                              @RequestParam UserType type,
                              @RequestParam boolean active,
@@ -80,10 +80,10 @@ public class AdminController {
             log.error("Failed to update user {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update user.");
         }
-        return "redirect:/admin/user";
+        return "redirect:/admin/users";
     }
 
-    @PostMapping("/user/{id}/delete")
+    @PostMapping("/users/{id}/delete")
     public String deleteUser(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             userService.delete(id);
@@ -92,21 +92,21 @@ public class AdminController {
             log.error("Failed to delete user {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete user.");
         }
-        return "redirect:/admin/user";
+        return "redirect:/admin/users";
     }
 
     // -------------------------------------------------------------------------
     // Company
     // -------------------------------------------------------------------------
 
-    @GetMapping("/company")
+    @GetMapping("/companies")
     public String companies(Model model) {
         model.addAttribute("companies", companyService.findAll());
         model.addAttribute("exchangeRates", exchangeRateService.findAll());
         return "admin/company";
     }
 
-    @PostMapping("/company/create")
+    @PostMapping("/companies")
     public String createCompany(@ModelAttribute Company company, RedirectAttributes redirectAttributes) {
         try {
             companyService.save(company);
@@ -115,17 +115,17 @@ public class AdminController {
             log.error("Failed to create company", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create company.");
         }
-        return "redirect:/admin/company";
+        return "redirect:/admin/companies";
     }
 
-    @GetMapping("/company/{id}/form")
+    @GetMapping("/companies/{id}/edit-form")
     public String companyForm(@PathVariable int id, Model model) {
         companyService.findById(id).ifPresent(c -> model.addAttribute("company", c));
         model.addAttribute("exchangeRates", exchangeRateService.findAll());
         return "admin/company :: editForm";
     }
 
-    @PostMapping("/company/{id}/update")
+    @PostMapping("/companies/{id}/update")
     public String updateCompany(@PathVariable int id,
                                 @ModelAttribute Company company,
                                 RedirectAttributes redirectAttributes) {
@@ -136,10 +136,10 @@ public class AdminController {
             log.error("Failed to update company {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update company.");
         }
-        return "redirect:/admin/company";
+        return "redirect:/admin/companies";
     }
 
-    @PostMapping("/company/{id}/delete")
+    @PostMapping("/companies/{id}/delete")
     public String deleteCompany(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             companyService.delete(id);
@@ -148,20 +148,20 @@ public class AdminController {
             log.error("Failed to delete company {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete company.");
         }
-        return "redirect:/admin/company";
+        return "redirect:/admin/companies";
     }
 
     // -------------------------------------------------------------------------
     // Pillar
     // -------------------------------------------------------------------------
 
-    @GetMapping("/pillar")
+    @GetMapping("/pillars")
     public String pillars(Model model) {
         model.addAttribute("pillars", pillarService.findAll());
         return "admin/pillar";
     }
 
-    @PostMapping("/pillar/create")
+    @PostMapping("/pillars")
     public String createPillar(@ModelAttribute Pillar pillar, RedirectAttributes redirectAttributes) {
         try {
             pillarService.save(pillar);
@@ -170,16 +170,16 @@ public class AdminController {
             log.error("Failed to create pillar", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create pillar.");
         }
-        return "redirect:/admin/pillar";
+        return "redirect:/admin/pillars";
     }
 
-    @GetMapping("/pillar/{id}/form")
+    @GetMapping("/pillars/{id}/edit-form")
     public String pillarForm(@PathVariable int id, Model model) {
         pillarService.findById(id).ifPresent(p -> model.addAttribute("pillar", p));
         return "admin/pillar :: editForm";
     }
 
-    @PostMapping("/pillar/{id}/update")
+    @PostMapping("/pillars/{id}/update")
     public String updatePillar(@PathVariable int id,
                                @ModelAttribute Pillar pillar,
                                RedirectAttributes redirectAttributes) {
@@ -190,10 +190,10 @@ public class AdminController {
             log.error("Failed to update pillar {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update pillar.");
         }
-        return "redirect:/admin/pillar";
+        return "redirect:/admin/pillars";
     }
 
-    @PostMapping("/pillar/{id}/delete")
+    @PostMapping("/pillars/{id}/delete")
     public String deletePillar(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             pillarService.delete(id);
@@ -202,20 +202,20 @@ public class AdminController {
             log.error("Failed to delete pillar {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete pillar.");
         }
-        return "redirect:/admin/pillar";
+        return "redirect:/admin/pillars";
     }
 
     // -------------------------------------------------------------------------
     // Department
     // -------------------------------------------------------------------------
 
-    @GetMapping("/department")
+    @GetMapping("/departments")
     public String departments(Model model) {
         model.addAttribute("departments", departmentService.findAll());
         return "admin/department";
     }
 
-    @PostMapping("/department/create")
+    @PostMapping("/departments")
     public String createDepartment(@ModelAttribute Department department,
                                    RedirectAttributes redirectAttributes) {
         try {
@@ -225,16 +225,16 @@ public class AdminController {
             log.error("Failed to create department", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create department.");
         }
-        return "redirect:/admin/department";
+        return "redirect:/admin/departments";
     }
 
-    @GetMapping("/department/{id}/form")
+    @GetMapping("/departments/{id}/edit-form")
     public String departmentForm(@PathVariable int id, Model model) {
         departmentService.findById(id).ifPresent(d -> model.addAttribute("department", d));
         return "admin/department :: editForm";
     }
 
-    @PostMapping("/department/{id}/update")
+    @PostMapping("/departments/{id}/update")
     public String updateDepartment(@PathVariable int id,
                                    @ModelAttribute Department department,
                                    RedirectAttributes redirectAttributes) {
@@ -245,10 +245,10 @@ public class AdminController {
             log.error("Failed to update department {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update department.");
         }
-        return "redirect:/admin/department";
+        return "redirect:/admin/departments";
     }
 
-    @PostMapping("/department/{id}/delete")
+    @PostMapping("/departments/{id}/delete")
     public String deleteDepartment(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             departmentService.delete(id);
@@ -257,20 +257,20 @@ public class AdminController {
             log.error("Failed to delete department {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete department.");
         }
-        return "redirect:/admin/department";
+        return "redirect:/admin/departments";
     }
 
     // -------------------------------------------------------------------------
     // Function
     // -------------------------------------------------------------------------
 
-    @GetMapping("/function")
+    @GetMapping("/functions")
     public String functions(Model model) {
         model.addAttribute("functions", functionService.findAll());
         return "admin/function";
     }
 
-    @PostMapping("/function/create")
+    @PostMapping("/functions")
     public String createFunction(@ModelAttribute Function function,
                                  RedirectAttributes redirectAttributes) {
         try {
@@ -280,16 +280,16 @@ public class AdminController {
             log.error("Failed to create function", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create function.");
         }
-        return "redirect:/admin/function";
+        return "redirect:/admin/functions";
     }
 
-    @GetMapping("/function/{id}/form")
+    @GetMapping("/functions/{id}/edit-form")
     public String functionForm(@PathVariable int id, Model model) {
         functionService.findById(id).ifPresent(f -> model.addAttribute("function", f));
         return "admin/function :: editForm";
     }
 
-    @PostMapping("/function/{id}/update")
+    @PostMapping("/functions/{id}/update")
     public String updateFunction(@PathVariable int id,
                                  @ModelAttribute Function function,
                                  RedirectAttributes redirectAttributes) {
@@ -300,10 +300,10 @@ public class AdminController {
             log.error("Failed to update function {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update function.");
         }
-        return "redirect:/admin/function";
+        return "redirect:/admin/functions";
     }
 
-    @PostMapping("/function/{id}/delete")
+    @PostMapping("/functions/{id}/delete")
     public String deleteFunction(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             functionService.delete(id);
@@ -312,20 +312,20 @@ public class AdminController {
             log.error("Failed to delete function {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete function.");
         }
-        return "redirect:/admin/function";
+        return "redirect:/admin/functions";
     }
 
     // -------------------------------------------------------------------------
     // Exchange Rate
     // -------------------------------------------------------------------------
 
-    @GetMapping("/exchange-rate")
+    @GetMapping("/exchange-rates")
     public String exchangeRates(Model model) {
         model.addAttribute("exchangeRates", exchangeRateService.findAll());
         return "admin/exchange-rate";
     }
 
-    @PostMapping("/exchange-rate/create")
+    @PostMapping("/exchange-rates")
     public String createExchangeRate(@ModelAttribute ExchangeRate exchangeRate,
                                      RedirectAttributes redirectAttributes) {
         try {
@@ -335,16 +335,16 @@ public class AdminController {
             log.error("Failed to create exchange rate", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create exchange rate.");
         }
-        return "redirect:/admin/exchange-rate";
+        return "redirect:/admin/exchange-rates";
     }
 
-    @GetMapping("/exchange-rate/{id}/form")
+    @GetMapping("/exchange-rates/{id}/edit-form")
     public String exchangeRateForm(@PathVariable int id, Model model) {
         exchangeRateService.findById(id).ifPresent(e -> model.addAttribute("exchangeRate", e));
         return "admin/exchange-rate :: editForm";
     }
 
-    @PostMapping("/exchange-rate/{id}/update")
+    @PostMapping("/exchange-rates/{id}/update")
     public String updateExchangeRate(@PathVariable int id,
                                      @ModelAttribute ExchangeRate exchangeRate,
                                      RedirectAttributes redirectAttributes) {
@@ -355,10 +355,10 @@ public class AdminController {
             log.error("Failed to update exchange rate {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update exchange rate.");
         }
-        return "redirect:/admin/exchange-rate";
+        return "redirect:/admin/exchange-rates";
     }
 
-    @PostMapping("/exchange-rate/{id}/delete")
+    @PostMapping("/exchange-rates/{id}/delete")
     public String deleteExchangeRate(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             exchangeRateService.delete(id);
@@ -367,20 +367,20 @@ public class AdminController {
             log.error("Failed to delete exchange rate {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete exchange rate.");
         }
-        return "redirect:/admin/exchange-rate";
+        return "redirect:/admin/exchange-rates";
     }
 
     // -------------------------------------------------------------------------
     // Admin Position
     // -------------------------------------------------------------------------
 
-    @GetMapping("/position")
+    @GetMapping("/positions")
     public String adminPositions(Model model) {
         model.addAttribute("positions", adminPositionService.findAll());
         return "admin/position";
     }
 
-    @PostMapping("/position/create")
+    @PostMapping("/positions")
     public String createAdminPosition(@ModelAttribute Position position,
                                       RedirectAttributes redirectAttributes) {
         try {
@@ -390,16 +390,16 @@ public class AdminController {
             log.error("Failed to create position", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create position.");
         }
-        return "redirect:/admin/position";
+        return "redirect:/admin/positions";
     }
 
-    @GetMapping("/position/{id}/form")
+    @GetMapping("/positions/{id}/edit-form")
     public String adminPositionForm(@PathVariable int id, Model model) {
         adminPositionService.findById(id).ifPresent(p -> model.addAttribute("position", p));
         return "admin/position :: editForm";
     }
 
-    @PostMapping("/position/{id}/update")
+    @PostMapping("/positions/{id}/update")
     public String updateAdminPosition(@PathVariable int id,
                                       @ModelAttribute Position position,
                                       RedirectAttributes redirectAttributes) {
@@ -410,10 +410,10 @@ public class AdminController {
             log.error("Failed to update position {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update position.");
         }
-        return "redirect:/admin/position";
+        return "redirect:/admin/positions";
     }
 
-    @PostMapping("/position/{id}/delete")
+    @PostMapping("/positions/{id}/delete")
     public String deleteAdminPosition(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             adminPositionService.delete(id);
@@ -422,15 +422,15 @@ public class AdminController {
             log.error("Failed to delete position {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete position.");
         }
-        return "redirect:/admin/position";
+        return "redirect:/admin/positions";
     }
 
-    @GetMapping("/position/upload")
+    @GetMapping("/positions/upload")
     public String positionUpload() {
         return "admin/position-upload";
     }
 
-    @PostMapping("/position/upload")
+    @PostMapping("/positions/upload")
     public String uploadPositions(@RequestParam("file") MultipartFile file,
                                   RedirectAttributes redirectAttributes) {
         try {
@@ -440,7 +440,7 @@ public class AdminController {
             log.error("Failed to import positions from CSV", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Import failed: " + e.getMessage());
         }
-        return "redirect:/admin/position";
+        return "redirect:/admin/positions";
     }
 
     // -------------------------------------------------------------------------
@@ -529,20 +529,20 @@ public class AdminController {
     // Submission review
     // -------------------------------------------------------------------------
 
-    @GetMapping("/submission")
+    @GetMapping("/submissions")
     public String submissions(Model model) {
         model.addAttribute("submissions", adminSubmissionService.findAll());
         return "admin/submission";
     }
 
-    @GetMapping("/submission/{id}/form")
+    @GetMapping("/submissions/{id}/edit-form")
     public String submissionForm(@PathVariable int id, Model model) {
         adminSubmissionService.findById(id).ifPresent(s -> model.addAttribute("submission", s));
         model.addAttribute("statuses", submissionStatusService.findAll());
         return "admin/submission :: editForm";
     }
 
-    @PostMapping("/submission/{id}/update")
+    @PostMapping("/submissions/{id}/update")
     public String updateSubmission(@PathVariable int id,
                                    @RequestParam int statusId,
                                    @RequestParam(required = false) String comment,
@@ -554,10 +554,10 @@ public class AdminController {
             log.error("Failed to update submission {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update submission.");
         }
-        return "redirect:/admin/submission";
+        return "redirect:/admin/submissions";
     }
 
-    @PostMapping("/submission/{id}/delete")
+    @PostMapping("/submissions/{id}/delete")
     public String deleteSubmission(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             adminSubmissionService.delete(id);
@@ -566,13 +566,13 @@ public class AdminController {
             log.error("Failed to delete submission {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete submission.");
         }
-        return "redirect:/admin/submission";
+        return "redirect:/admin/submissions";
     }
 
-    @GetMapping("/submission/{id}/change")
-    public String submissionChanges(@PathVariable int id, Model model) {
-        adminSubmissionService.findById(id).ifPresent(s -> model.addAttribute("submission", s));
-        model.addAttribute("changes", adminSubmissionService.getChangesBySubmissionId(id));
+    @GetMapping("/submission-changes")
+    public String submissionChanges(@RequestParam int submissionId, Model model) {
+        adminSubmissionService.findById(submissionId).ifPresent(s -> model.addAttribute("submission", s));
+        model.addAttribute("changes", adminSubmissionService.getChangesBySubmissionId(submissionId));
         return "admin/submission-change";
     }
 
@@ -580,13 +580,13 @@ public class AdminController {
     // Status config (read-only)
     // -------------------------------------------------------------------------
 
-    @GetMapping("/submission/status")
+    @GetMapping("/submission-statuses")
     public String submissionStatuses(Model model) {
         model.addAttribute("statuses", submissionStatusService.findAll());
         return "admin/submission-status";
     }
 
-    @GetMapping("/position/status")
+    @GetMapping("/position-statuses")
     public String positionStatuses(Model model) {
         model.addAttribute("statuses", positionStatusService.findAll());
         return "admin/position-status";

@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Controller
-@RequestMapping("/position")
+@RequestMapping("/positions")
 @RequiredArgsConstructor
 public class PositionController {
 
@@ -49,7 +49,7 @@ public class PositionController {
             log.error("Failed to create position", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create position.");
         }
-        return "redirect:/position";
+        return "redirect:/positions";
     }
 
     @GetMapping("/view/{id}")
@@ -78,7 +78,7 @@ public class PositionController {
             log.error("Failed to update position {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update position.");
         }
-        return "redirect:/position";
+        return "redirect:/positions";
     }
 
     @PostMapping("/delete/{id}")
@@ -90,7 +90,7 @@ public class PositionController {
             log.error("Failed to delete position {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete position.");
         }
-        return "redirect:/position";
+        return "redirect:/positions";
     }
 
     private void populateFormLookups(Model model) {

@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
-@RequestMapping("/submission")
+@RequestMapping("/submissions")
 @RequiredArgsConstructor
 public class SubmissionController {
 
@@ -48,7 +48,7 @@ public class SubmissionController {
             log.error("Failed to create submission for user {}", principal.getUserId(), e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create submission.");
         }
-        return "redirect:/submission";
+        return "redirect:/submissions";
     }
 
     @GetMapping("/{id}/change")
