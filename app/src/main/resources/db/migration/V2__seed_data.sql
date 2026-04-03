@@ -1,116 +1,90 @@
--- V2: Seed data
--- Ported from schema.sql INSERT statements.
--- Note: the default admin password hash is bcrypt-based and must be re-hashed
--- on first deploy using Spring Security's BCryptPasswordEncoder.
--- The placeholder below is a bcrypt hash of 'changeme' — force a password
--- reset on first login.
+-- V2: Seed data — generic tech-company demo data
+-- The default admin password is a bcrypt hash of 'changeme' — reset on first deploy.
+
+-- Clear any pre-existing reference data and reset identity sequences
+TRUNCATE TABLE user_function, "user", company, exchange_rate, pillar, department, "function",
+               position_status, recruitment_status, submission_status, submission_reason
+               RESTART IDENTITY CASCADE;
 
 -- Exchange rates (inserted first — referenced by company)
 INSERT INTO exchange_rate (name, code, rate) VALUES
-    ('Euro',          'EUR', 1.0),
-    ('Peso',          'COP', 0.0003),
-    ('Kuna',          'HRK', 0.14),
-    ('British Pound', 'GBP', 0.88);
+    ('Euro',           'EUR', 1.0),
+    ('US Dollar',      'USD', 1.08),
+    ('British Pound',  'GBP', 0.86),
+    ('Swiss Franc',    'CHF', 0.97);
 
--- Companies
+-- Companies (subsidiaries of a fictional tech group)
 INSERT INTO company (name, exchange_rate_id) VALUES
-    ('GM Malta',                   1),
-    ('GM Casino',                  1),
-    ('GM Technology Services',     1),
-    ('GM Retail Services',         1),
-    ('GM Retail Systems',          1),
-    ('GM Shop Agency North',       1),
-    ('GM Shop Agency East',        1),
-    ('GM Group',                   1),
-    ('Sports Services South America', 2),
-    ('Sport Bet',                  3),
-    ('GM Services',                4),
-    ('Maritimo D',                 1);
+    ('Acme Group HQ',              1),
+    ('Acme Technology Ltd',        1),
+    ('Acme Digital Services',      1),
+    ('Acme Data & Analytics',      1),
+    ('Acme Product Solutions',     1),
+    ('Acme Cloud Platforms',       1),
+    ('Acme Americas Inc',          2),
+    ('Acme UK Ltd',                3),
+    ('Acme Switzerland AG',        4),
+    ('Acme Shared Services',       1);
 
--- Pillars
+-- Pillars (strategic groupings)
 INSERT INTO pillar (name) VALUES
-    ('Business Framework'),
-    ('Tech'),
-    ('Online'),
-    ('Retail');
+    ('Engineering'),
+    ('Product'),
+    ('Commercial'),
+    ('Corporate');
 
 -- Departments
 INSERT INTO department (name) VALUES
-    ('Tech'),
-    ('Retention Marketing - Online'),
-    ('Retail Services & Legal Affairs'),
-    ('Bookmaking'),
-    ('Payments & Fraud Services'),
-    ('TRServ'),
-    ('Retail'),
+    ('Engineering'),
+    ('Platform Engineering'),
+    ('Data Engineering'),
+    ('Infrastructure & DevOps'),
+    ('Security'),
+    ('Product Management'),
+    ('Product Design & UX'),
+    ('Data & Analytics'),
+    ('Sales'),
+    ('Marketing'),
+    ('Customer Success'),
     ('Finance'),
-    ('Gaming - Online'),
-    ('C-Level'),
-    ('Legal'),
-    ('Marketing Intelligence'),
-    ('Business Development'),
-    ('Compliance & Regulations'),
-    ('HR'),
-    ('Admin'),
-    ('PMO'),
-    ('Graduates - Trainees'),
-    ('Acquisition Marketing - Online'),
-    ('Customer Services'),
-    ('TSA North - Retail'),
-    ('GM Gibraltar'),
-    ('Tech - Data'),
-    ('TSA EAST - Retail'),
-    ('TRSys'),
-    ('Customer & Transactions Platform'),
-    ('Data & Business Intelligence'),
-    ('Digital'),
-    ('Digital Tech'),
-    ('Infrastructure'),
-    ('Graduate Trainees'),
-    ('Corp. Communications'),
+    ('Legal & Compliance'),
+    ('Human Resources'),
+    ('People Operations'),
+    ('Recruiting'),
+    ('IT Operations'),
+    ('Project Management Office'),
     ('Internal Audit'),
+    ('Executive'),
+    ('Corporate Communications'),
     ('Office Services'),
-    ('Executives'),
-    ('Sponsorships'),
-    ('Sponsoring');
+    ('Graduate Programme');
 
--- Functions
+-- Functions (cross-cutting capability areas)
 INSERT INTO "function" (name) VALUES
-    ('Tech - Infrastructure'),
-    ('Retention Marketing'),
-    ('Retail Services & Legal Affairs'),
-    ('Bookmaking Croatia'),
-    ('Payments & Fraud Services'),
-    ('Retail Services'),
-    ('Tech - Platform'),
-    ('Tech - Digital Tech'),
-    ('Tech - Tech Digital'),
-    ('TSA East'),
-    ('Tech'),
-    ('Tech - Bookmaking'),
+    ('Engineering - Backend'),
+    ('Engineering - Frontend'),
+    ('Engineering - Mobile'),
+    ('Engineering - Platform'),
+    ('Engineering - Data'),
+    ('Engineering - Infrastructure'),
+    ('Engineering - Security'),
+    ('Product'),
+    ('Design & UX'),
+    ('Data & Analytics'),
+    ('Sales'),
+    ('Marketing'),
+    ('Customer Success'),
     ('Finance'),
-    ('HR'),
-    ('Office Services'),
-    ('Bookmaking Colombia'),
-    ('Gaming'),
-    ('Marketing Intelligence'),
-    ('Executives'),
-    ('Bookmaking Malta'),
-    ('Business Development'),
-    ('Compliance & Regulations'),
     ('Legal'),
-    ('PMO'),
-    ('Acquisition Marketing'),
-    ('Customer Services'),
-    ('Corp. Communications'),
-    ('TSA North'),
-    ('GM Gibraltar'),
-    ('Tech - Data'),
-    ('Tech - Retail Tech'),
-    ('Retail Systems'),
-    ('Sponsoring'),
-    ('GM Shop Agency South'),
-    ('Internal Audit');
+    ('Compliance'),
+    ('Human Resources'),
+    ('Recruiting'),
+    ('IT Operations'),
+    ('Project Management'),
+    ('Internal Audit'),
+    ('Executive'),
+    ('Corporate Communications'),
+    ('Office Services');
 
 -- Position statuses
 INSERT INTO position_status (name) VALUES
@@ -147,10 +121,9 @@ INSERT INTO submission_reason (name) VALUES
     ('New Unapproved Position'),
     ('Deactivate Position');
 
--- Default admin user
--- Password is a bcrypt hash of 'changeme' — must be reset on first deploy.
+-- Default admin user (password = bcrypt('changeme') — reset on first deploy)
 INSERT INTO "user" (email, password, type, active) VALUES
-    ('gabriel.gaucimaistre@gaucimaistre.com',
+    ('admin@example.com',
      '$2a$10$zsS9Kw/l0CvDG6yMWA2EC.tzqqhn0prcD85Uruh.exJuPg9fRlUt6',
      'ADMIN',
      TRUE);
