@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>FAQ</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">FAQ</h1>
+        <div class="btn-toolbar mb-2 mb-md-0" sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/admin/faq}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-pencil-square me-1"></i> Edit
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="py-4">
+            <!--
+                page.body contains pre-rendered HTML with Bootstrap 5 accordion markup,
+                stored and sanitized server-side by PageService / the admin editor.
+            -->
+            <div th:utext="${page.body}">
+                <!-- FAQ accordion content rendered here -->
+            </div>
+        </div>
+    </div>
+
+</th:block>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/main}">
+<head>
+    <title layout:fragment="page-title">New Submission</title>
+    <style layout:fragment="head-extra">
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">New Submission Request</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a th:href="@{/submission}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+        </div>
+    </div>
+
+    <p class="text-muted mb-4">
+        Enter the position number to load current position details on the right.
+        Select a reason — the relevant change fields will appear automatically.
+        Approved changes will be applied on the effective date.
+    </p>
+
+    <div class="row" x-data="{
+        reason: '',
+        positionId: '',
+        positionData: null,
+        loadingPosition: false,
+        showPositionTitle()           { return ['Backfill', 'Job Title Change'].includes(this.reason); },
+        showReportingLines()          { return this.reason === 'Reporting Line Change'; },
+        showPositionHours()           { return ['Backfill', 'Working Hours Change'].includes(this.reason); },
+        showSalaryFields()            { return ['Backfill', 'Salary Change'].includes(this.reason); },
+        showAnyChangeFields()         { return this.reason !== '' &&
+                                               this.reason !== 'New Approved Position' &&
+                                               this.reason !== 'New Unapproved Position' &&
+                                               this.reason !== 'Deactivate Position'; },
+        async fetchPosition() {
+            const id = this.positionId.trim();
+            if (id.length < 6) { this.positionData = null; return; }
+            this.loadingPosition = true;
+            try {
+                const resp = await fetch('/position/' + encodeURIComponent(id) + '/json');
+                if (resp.ok) { this.positionData = await resp.json(); }
+                else { this.positionData = null; }
+            } catch (_) { this.positionData = null; }
+            finally { this.loadingPosition = false; }
+        }
+    }">
+
+        <!-- ── Left column: form ──────────────────────────────────────────── -->
+        <div class="col-md-8 order-md-1">
+            <h4 class="mb-3">Submission</h4>
+
+            <form th:action="@{/submission/create}" method="post" class="needs-validation" novalidate>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                <!-- Position ID -->
+                <div class="mb-3">
+                    <label for="positionId" class="form-label">Position ID <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="positionId" name="positionId"
+                           placeholder="e.g. ABC001" required
+                           x-model="positionId"
+                           @input.debounce.600ms="fetchPosition()"/>
+                    <div class="invalid-feedback">Position ID is required.</div>
+                    <div class="form-text">Enter a valid position number to preview it on the right.</div>
+                </div>
+
+                <!-- Reason -->
+                <div class="mb-3">
+                    <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
+                    <select name="reasonId" class="form-select" id="reason" required
+                            x-model="reason"
+                            @change="reason = $event.target.options[$event.target.selectedIndex].text">
+                        <option value="" selected disabled hidden></option>
+                        <option th:each="r : ${reasons}"
+                                th:value="${r.id}"
+                                th:text="${r.name}">Reason</option>
+                    </select>
+                    <div class="invalid-feedback">Reason is required.</div>
+                    <div class="form-text">Change fields will appear based on the reason selected.</div>
+                </div>
+
+                <!-- ── Conditional change fields ───────────────────────── -->
+
+                <!-- Position Title — Backfill, Job Title Change -->
+                <div class="mb-3" x-show="showPositionTitle()" x-cloak>
+                    <label for="positionTitleField" class="form-label">New Position Title</label>
+                    <input type="text" class="form-control" id="positionTitleField"
+                           name="positionTitleField" placeholder="Enter new title"
+                           :required="showPositionTitle()"/>
+                    <div class="invalid-feedback">Position title is required for this reason.</div>
+                </div>
+
+                <!-- Functional Reporting Line — Reporting Line Change -->
+                <div class="mb-3" x-show="showReportingLines()" x-cloak>
+                    <label for="functionalReportingLineField" class="form-label">Functional Reporting Line</label>
+                    <input type="text" class="form-control" id="functionalReportingLineField"
+                           name="functionalReportingLineField" placeholder="Enter new functional reporting line"
+                           :required="showReportingLines()"/>
+                    <div class="invalid-feedback">Functional reporting line is required.</div>
+                </div>
+
+                <!-- Disciplinary Reporting Line — Reporting Line Change -->
+                <div class="mb-3" x-show="showReportingLines()" x-cloak>
+                    <label for="disciplinaryReportingLineField" class="form-label">Disciplinary Reporting Line</label>
+                    <input type="text" class="form-control" id="disciplinaryReportingLineField"
+                           name="disciplinaryReportingLineField" placeholder="Enter new disciplinary reporting line"
+                           :required="showReportingLines()"/>
+                    <div class="invalid-feedback">Disciplinary reporting line is required.</div>
+                </div>
+
+                <!-- Position Hours — Backfill, Working Hours Change -->
+                <div class="mb-3" x-show="showPositionHours()" x-cloak>
+                    <label for="positionHoursField" class="form-label">Position Hours</label>
+                    <input type="number" class="form-control" id="positionHoursField"
+                           name="positionHoursField" placeholder="e.g. 40" min="1" max="168"
+                           :required="showPositionHours()"/>
+                    <div class="invalid-feedback">Position hours are required.</div>
+                </div>
+
+                <!-- Annual Salary — Backfill, Salary Change -->
+                <div class="mb-3" x-show="showSalaryFields()" x-cloak>
+                    <label for="annualSalaryField" class="form-label">Annual Salary</label>
+                    <div class="input-group">
+                        <span class="input-group-text">€</span>
+                        <input type="text" class="form-control" id="annualSalaryField"
+                               name="annualSalaryField" placeholder="0.00"
+                               :required="showSalaryFields()"/>
+                        <div class="invalid-feedback">Annual salary is required.</div>
+                    </div>
+                </div>
+
+                <!-- Performance Bonus — not triggered by any current reason; kept for completeness -->
+                <div class="mb-3" x-show="false" x-cloak>
+                    <label for="performanceBonusField" class="form-label">Performance Bonus (%)</label>
+                    <input type="text" class="form-control" id="performanceBonusField"
+                           name="performanceBonusField" placeholder="0"/>
+                </div>
+
+                <!-- Super Bonus — not triggered by any current reason; kept for completeness -->
+                <div class="mb-3" x-show="false" x-cloak>
+                    <label for="superBonusField" class="form-label">Super Bonus (%)</label>
+                    <input type="text" class="form-control" id="superBonusField"
+                           name="superBonusField" placeholder="0"/>
+                </div>
+
+                <!-- Management Bonus — not triggered by any current reason; kept for completeness -->
+                <div class="mb-3" x-show="false" x-cloak>
+                    <label for="managementBonusField" class="form-label">Management Bonus</label>
+                    <input type="text" class="form-control" id="managementBonusField"
+                           name="managementBonusField" placeholder=""/>
+                </div>
+
+                <!-- Start Date — not triggered by any current reason; kept for completeness -->
+                <div class="mb-3" x-show="false" x-cloak>
+                    <label for="startDateField" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDateField" name="startDateField"/>
+                </div>
+
+                <!-- ── Always-visible fields ────────────────────────────── -->
+
+                <!-- Rationale -->
+                <div class="mb-3">
+                    <label for="rationale" class="form-label">Rationale <span class="text-danger">*</span></label>
+                    <textarea rows="5" class="form-control" id="rationale" name="rationale"
+                              placeholder="Explain the reason for this submission…" required></textarea>
+                    <div class="invalid-feedback">Rationale is required.</div>
+                    <div class="form-text">Your submission will be reviewed based on the rationale given.</div>
+                </div>
+
+                <!-- Effective Date -->
+                <div class="mb-3">
+                    <label for="effectiveDate" class="form-label">Effective Date <span class="text-danger">*</span></label>
+                    <input type="date" name="effectiveDate" class="form-control" id="effectiveDate" required/>
+                    <div class="invalid-feedback">Effective date is required.</div>
+                    <div class="form-text">Changes will be applied on the selected date.</div>
+                </div>
+
+                <!-- Gatekeeping cycle -->
+                <div class="mb-3" th:if="${gatekeepings != null and not #lists.isEmpty(gatekeepings)}">
+                    <label for="gatekeepingId" class="form-label">Gatekeeping Cycle <span class="text-danger">*</span></label>
+                    <select name="gatekeepingId" class="form-select" id="gatekeepingId" required>
+                        <option value="" selected disabled hidden>Select a cycle…</option>
+                        <option th:each="g : ${gatekeepings}"
+                                th:value="${g.id}"
+                                th:text="${g.date}">Cycle</option>
+                    </select>
+                    <div class="invalid-feedback">Gatekeeping cycle is required.</div>
+                </div>
+
+                <hr class="mb-4"/>
+                <button class="btn btn-primary btn-lg w-100" type="submit">
+                    <i class="bi bi-send me-1"></i>Submit
+                </button>
+            </form>
+        </div>
+
+        <!-- ── Right column: position preview ───────────────────────────── -->
+        <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Current Position</span>
+                <span x-show="loadingPosition" x-cloak>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </span>
+            </h4>
+
+            <!-- Empty state -->
+            <div x-show="!positionData && !loadingPosition" class="text-center text-muted py-5 border rounded">
+                <i class="bi bi-search fs-3 d-block mb-2"></i>
+                <small>Enter a position ID to preview details.</small>
+            </div>
+
+            <!-- Position data card -->
+            <div x-show="positionData" x-cloak class="card card-body bg-light">
+                <dl class="row mb-0 small">
+                    <dt class="col-5 text-muted">Status</dt>
+                    <dd class="col-7" x-text="positionData?.status ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Recruitment</dt>
+                    <dd class="col-7" x-text="positionData?.recruitmentStatus ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Pillar</dt>
+                    <dd class="col-7" x-text="positionData?.pillar ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Company</dt>
+                    <dd class="col-7" x-text="positionData?.company ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Department</dt>
+                    <dd class="col-7" x-text="positionData?.department ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Function</dt>
+                    <dd class="col-7" x-text="positionData?.function ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Title</dt>
+                    <dd class="col-7" x-text="positionData?.title ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Func. Reporting</dt>
+                    <dd class="col-7" x-text="positionData?.functionalReportingLine ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Disc. Reporting</dt>
+                    <dd class="col-7" x-text="positionData?.disciplinaryReportingLine ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Holder</dt>
+                    <dd class="col-7" x-text="positionData?.holder ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Hours</dt>
+                    <dd class="col-7" x-text="positionData?.hours ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Start Date</dt>
+                    <dd class="col-7" x-text="positionData?.startDate ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">End Date</dt>
+                    <dd class="col-7" x-text="positionData?.endDate ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Salary</dt>
+                    <dd class="col-7" x-text="positionData?.salary ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Soc. Security</dt>
+                    <dd class="col-7" x-text="positionData?.socialSecurityContribution ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Fringe Benefit</dt>
+                    <dd class="col-7" x-text="positionData?.fringeBenefit ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Perf. Bonus</dt>
+                    <dd class="col-7" x-text="positionData?.performanceBonus ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Super Bonus</dt>
+                    <dd class="col-7" x-text="positionData?.superBonus ?? '—'"></dd>
+
+                    <dt class="col-5 text-muted">Mgmt. Bonus</dt>
+                    <dd class="col-7" x-text="positionData?.managementBonus ?? '—'"></dd>
+                </dl>
+            </div>
+        </div>
+    </div><!-- /row x-data -->
+
+</th:block>
+
+<th:block layout:fragment="scripts-extra">
+    <script>
+        /* Bootstrap 5 client-side validation */
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.needs-validation').forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                });
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>
