@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: headcount
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:gatekeeping}
+    username: ${DB_USER:gatekeeping}
+    password: ${DB_PASSWORD:gatekeeping}
+    driver-class-name: org.postgresql.Driver
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+  mail:
+    host: smtp.office365.com
+    port: 587
+    username: ${MAIL_USERNAME:hrgatekeeping@gaucimaistre.com}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
+  ssl:
+    enabled: ${SSL_ENABLED:false}
+    key-store: ${SSL_KEYSTORE:}
+    key-store-password: ${SSL_KEYSTORE_PASSWORD:}
+
+session:
+  timeout: 20m
+
+logging:
+  level:
+    com.gaucimaistre.headcount: DEBUG
+    org.springframework.security: INFO
+    org.flywaydb: INFO

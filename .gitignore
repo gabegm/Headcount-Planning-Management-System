@@ -21,3 +21,7 @@ eggs/
 *.swp
 *~
 *.sqlite
+# Spring Boot app
+app/.gradle/
+app/build/
+app/out/
