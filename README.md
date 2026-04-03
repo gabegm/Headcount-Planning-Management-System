@@ -44,17 +44,23 @@ submission/approval workflows, org hierarchy, and analytics dashboards.
 
 ## Quick Start (Docker)
 
+The easiest way to run the application is with Docker Compose, which starts
+both PostgreSQL and the application together:
+
 ```bash
 # Clone the repository and switch to the Spring Boot branch
 git clone https://github.com/gabegm/Headcount-Planning-Management-System
 cd Headcount-Planning-Management-System
 git checkout migration/spring-boot
 
-# Start PostgreSQL + the application
+# Build and start everything (database + app)
 docker compose up --build
 ```
 
 Open <http://localhost:8080> in a browser.
+
+> **Note:** On the first run Docker will pull images and build the JAR —
+> this takes a few minutes. Subsequent starts are much faster.
 
 Default admin credentials (change after first login):
 
@@ -67,36 +73,51 @@ Default admin credentials (change after first login):
 
 ## Local Development
 
+Use this approach when you want fast iteration with `bootRun` and live reloading.
+
 ### 1. Start the database
 
+The application requires a running PostgreSQL instance. Start just the database
+service via Docker Compose **before** running the application:
+
 ```bash
-docker compose up postgres -d
+# Run from the repository root
+docker compose up db -d
 ```
 
-### 2. Configure environment
-
-The application reads connection details from environment variables. Copy and
-adjust the defaults:
+Verify it is healthy:
 
 ```bash
-export DB_URL=jdbc:postgresql://localhost:5432/headcount
-export DB_USERNAME=headcount
-export DB_PASSWORD=headcount
+docker compose ps db   # Status should show "healthy"
+```
+
+### 2. Run the application
+
+```bash
+cd app
+./gradlew bootRun
+```
+
+The application connects to `localhost:5432` with the default credentials
+(`gatekeeping` / `gatekeeping`) which match the Docker Compose database service.
+No extra environment variables are needed for local development.
+
+Open <http://localhost:8080> in a browser.
+
+### 3. Environment variables (optional overrides)
+
+Only set these if you are connecting to a non-default database:
+
+```bash
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_NAME=gatekeeping
+export DB_USER=gatekeeping
+export DB_PASSWORD=gatekeeping
 export MAIL_HOST=localhost
 export MAIL_PORT=1025
 export MAIL_PASSWORD=
 ```
-
-Or override via `application.yml` for local use.
-
-### 3. Run the application
-
-```bash
-cd app
-JAVA_HOME=<path-to-java-21> ./gradlew bootRun
-```
-
-Open <http://localhost:8080> in a browser.
 
 ---
 
@@ -165,9 +186,33 @@ Key properties in `application.yml` (all overridable via environment variables):
 
 | Property | Env var | Default |
 |----------|---------|---------|
-| `spring.datasource.url` | `DB_URL` | `jdbc:postgresql://localhost:5432/headcount` |
-| `spring.datasource.username` | `DB_USERNAME` | `headcount` |
-| `spring.datasource.password` | `DB_PASSWORD` | `headcount` |
+| `spring.datasource.url` | *(composed from below)* | `jdbc:postgresql://localhost:5432/gatekeeping` |
+| `spring.datasource.username` | `DB_USER` | `gatekeeping` |
+| `spring.datasource.password` | `DB_PASSWORD` | `gatekeeping` |
 | `spring.mail.host` | `MAIL_HOST` | `localhost` |
 | `spring.mail.port` | `MAIL_PORT` | `1025` |
 | `server.servlet.session.timeout` | — | `20m` |
+
+---
+
+## Troubleshooting
+
+**`password authentication failed for user "gatekeeping"`**
+The application started before the database was ready. Make sure the `db`
+Docker Compose service is running and healthy **before** running `bootRun`:
+```bash
+docker compose up db -d
+docker compose ps db   # wait until Status = healthy
+```
+
+**`Connection refused` on port 5432**
+Docker is not running, or the `db` service has not been started. Run
+`docker compose up db -d` from the repository root.
+
+**`java.lang.UnsupportedClassVersionError`**
+You are using a JDK older than 21. Check with `java -version` and install
+[Temurin 21](https://adoptium.net/).
+
+**Port 8080 already in use**
+Another process is using port 8080. Either stop it or change the application
+port: `./gradlew bootRun --args='--server.port=9090'`.
