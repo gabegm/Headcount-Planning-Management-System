@@ -6,7 +6,6 @@ import com.gaucimaistre.headcount.model.enums.UserType;
 import com.gaucimaistre.headcount.security.AppUserDetails;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,8 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class HomeControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
 
     private static final String ADMIN_EMAIL = "admin@example.com";
 
@@ -29,7 +26,7 @@ class HomeControllerTest extends AbstractIntegrationTest {
     void home_whenUnauthenticated_redirectsToLogin() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/auth/login"));
+                .andExpect(redirectedUrl("/auth/login"));
     }
 
     @Test

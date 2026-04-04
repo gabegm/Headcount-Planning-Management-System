@@ -3,7 +3,6 @@ package com.gaucimaistre.headcount.controller;
 import com.gaucimaistre.headcount.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -11,8 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class AdminControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
 
     private static final String ADMIN_EMAIL = "admin@example.com";
 
@@ -20,7 +17,7 @@ class AdminControllerTest extends AbstractIntegrationTest {
     void adminDashboard_whenUnauthenticated_redirectsToLogin() throws Exception {
         mockMvc.perform(get("/admin"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/auth/login"));
+                .andExpect(redirectedUrl("/auth/login"));
     }
 
     @Test
