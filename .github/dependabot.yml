@@ -1,0 +1,59 @@
+version: 2
+updates:
+  # Gradle dependencies (Spring Boot app)
+  - package-ecosystem: gradle
+    directory: /app
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Malta
+    open-pull-requests-limit: 10
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.boot*"
+          - "io.spring.dependency-management*"
+      testcontainers:
+        patterns:
+          - "org.testcontainers*"
+    labels:
+      - dependencies
+      - java
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Malta
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+
+  # Docker base images
+  - package-ecosystem: docker
+    directory: /app
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Malta
+    labels:
+      - dependencies
+      - docker
+
+  # Docker Compose services (postgres image, etc.)
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Malta
+    labels:
+      - dependencies
+      - docker
