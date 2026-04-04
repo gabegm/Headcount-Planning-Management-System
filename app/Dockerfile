@@ -1,5 +1,5 @@
 # ── Build stage ────────────────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jdk-noble AS build
+FROM eclipse-temurin:25-jdk-noble AS build
 WORKDIR /build
 
 # Copy Gradle wrapper and dependency descriptors first for layer caching
@@ -14,7 +14,7 @@ COPY src/ src/
 RUN ./gradlew bootJar --no-daemon -q
 
 # ── Runtime stage ───────────────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jre-noble AS runtime
+FROM eclipse-temurin:25-jre-noble AS runtime
 WORKDIR /app
 
 # Non-root user for security
