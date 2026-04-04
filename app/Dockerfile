@@ -1,6 +1,9 @@
 # ── Build stage ────────────────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jdk-noble AS build
+FROM amazoncorretto:26 AS build
 WORKDIR /build
+
+# Install xargs (required by Gradle wrapper)
+RUN yum install -y findutils && yum clean all
 
 # Copy Gradle wrapper and dependency descriptors first for layer caching
 COPY gradlew settings.gradle.kts build.gradle.kts ./
@@ -14,11 +17,11 @@ COPY src/ src/
 RUN ./gradlew bootJar --no-daemon -q
 
 # ── Runtime stage ───────────────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jre-noble AS runtime
+FROM amazoncorretto:26-alpine AS runtime
 WORKDIR /app
 
 # Non-root user for security
-RUN groupadd --system headcount && useradd --system --gid headcount headcount
+RUN addgroup --system headcount && adduser --system --ingroup headcount headcount
 
 COPY --from=build /build/build/libs/*.jar app.jar
 
