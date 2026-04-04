@@ -4,6 +4,7 @@ import com.gaucimaistre.headcount.model.Position;
 import com.gaucimaistre.headcount.model.Submission;
 import com.gaucimaistre.headcount.model.SubmissionChange;
 import com.gaucimaistre.headcount.model.SubmissionStatus;
+import com.gaucimaistre.headcount.model.SubmissionView;
 import com.gaucimaistre.headcount.repository.PositionRepository;
 import com.gaucimaistre.headcount.repository.SubmissionChangeRepository;
 import com.gaucimaistre.headcount.repository.SubmissionRepository;
@@ -38,6 +39,14 @@ public class SubmissionService {
 
     public List<Submission> findBySubmitterId(int userId) {
         return submissionRepository.findBySubmitterId(userId);
+    }
+
+    public List<SubmissionView> findViewsBySubmitterId(int userId) {
+        return submissionRepository.findViewsBySubmitterId(userId);
+    }
+
+    public List<SubmissionView> findAllViews() {
+        return submissionRepository.findAllViews();
     }
 
     public Optional<Submission> findById(int id) {

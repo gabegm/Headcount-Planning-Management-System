@@ -3,12 +3,14 @@ package com.gaucimaistre.headcount.repository;
 import com.gaucimaistre.headcount.mapper.AuditLogRowMapper;
 import com.gaucimaistre.headcount.model.AuditLog;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class AuditRepository {
@@ -32,6 +34,7 @@ public class AuditRepository {
     }
 
     public void save(AuditLog auditLog) {
+        log.debug("Saving {}: {}", "audit-log", auditLog);
         String sql = """
                 INSERT INTO audit (user_id, user_agent, ip_address, domain, tbl, row_id, function, action)
                 VALUES (:userId, :userAgent, :ipAddress, :domain, :tbl, :rowId, :function, :action)

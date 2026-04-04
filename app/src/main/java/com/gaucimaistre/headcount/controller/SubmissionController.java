@@ -25,7 +25,7 @@ public class SubmissionController {
     @GetMapping
     public String index(@AuthenticationPrincipal AppUserDetails principal, Model model) {
         model.addAttribute("submissions",
-                submissionService.findBySubmitterId(principal.getUserId()));
+                submissionService.findViewsBySubmitterId(principal.getUserId()));
         return "submission/index";
     }
 

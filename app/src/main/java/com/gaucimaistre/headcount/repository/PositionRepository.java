@@ -5,6 +5,7 @@ import com.gaucimaistre.headcount.mapper.PositionViewRowMapper;
 import com.gaucimaistre.headcount.model.Position;
 import com.gaucimaistre.headcount.model.PositionView;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class PositionRepository {
@@ -51,8 +53,10 @@ public class PositionRepository {
 
     public Optional<Position> findById(int id) {
         String sql = SELECT_ALL_COLUMNS + "WHERE id = :id";
-        return jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
+        Optional<Position> result = jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
                 .stream().findFirst();
+        if (result.isEmpty()) log.debug("Position not found with id={}", id);
+        return result;
     }
 
     public Optional<Position> findByNumber(String number, boolean isBudget) {
@@ -98,6 +102,7 @@ public class PositionRepository {
     }
 
     public int save(Position position) {
+        log.debug("Saving {}: {}", "position", position.number());
         String sql = """
                 INSERT INTO position (
                     status_id, recruitment_status_id, number, pillar_id, company_id,
@@ -119,6 +124,7 @@ public class PositionRepository {
     }
 
     public void update(Position position) {
+        log.debug("Updating {} id={}", "position", position.id());
         String sql = """
                 UPDATE position SET
                     status_id = :statusId,
@@ -148,6 +154,7 @@ public class PositionRepository {
     }
 
     public void delete(int id) {
+        log.debug("Deleting {} id={}", "position", id);
         jdbc.update("DELETE FROM position WHERE id = :id", new MapSqlParameterSource("id", id));
     }
 

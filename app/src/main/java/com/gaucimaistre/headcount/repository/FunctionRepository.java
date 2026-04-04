@@ -3,6 +3,7 @@ package com.gaucimaistre.headcount.repository;
 import com.gaucimaistre.headcount.mapper.FunctionRowMapper;
 import com.gaucimaistre.headcount.model.Function;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class FunctionRepository {
@@ -29,11 +31,14 @@ public class FunctionRepository {
         String sql = """
                 SELECT id, name FROM "function" WHERE id = :id
                 """;
-        return jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
+        Optional<Function> result = jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
                 .stream().findFirst();
+        if (result.isEmpty()) log.debug("Function not found with id={}", id);
+        return result;
     }
 
     public int save(Function function) {
+        log.debug("Saving {}: {}", "function", function.name());
         String sql = """
                 INSERT INTO "function" (name) VALUES (:name)
                 """;
@@ -44,6 +49,7 @@ public class FunctionRepository {
     }
 
     public void update(Function function) {
+        log.debug("Updating {} id={}", "function", function.id());
         String sql = """
                 UPDATE "function" SET name = :name WHERE id = :id
                 """;
@@ -51,6 +57,7 @@ public class FunctionRepository {
     }
 
     public void delete(int id) {
+        log.debug("Deleting {} id={}", "function", id);
         String sql = """
                 DELETE FROM "function" WHERE id = :id
                 """;

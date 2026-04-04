@@ -3,6 +3,7 @@ package com.gaucimaistre.headcount.repository;
 import com.gaucimaistre.headcount.mapper.SubmissionChangeRowMapper;
 import com.gaucimaistre.headcount.model.SubmissionChange;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class SubmissionChangeRepository {
@@ -35,11 +37,14 @@ public class SubmissionChangeRepository {
                 FROM submission_change
                 WHERE id = :id
                 """;
-        return jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
+        Optional<SubmissionChange> result = jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
                 .stream().findFirst();
+        if (result.isEmpty()) log.debug("SubmissionChange not found with id={}", id);
+        return result;
     }
 
     public int save(SubmissionChange change) {
+        log.debug("Saving {}: submissionId={}", "submission-change", change.submissionId());
         String sql = """
                 INSERT INTO submission_change (submission_id, field, change)
                 VALUES (:submissionId, :field, :change)

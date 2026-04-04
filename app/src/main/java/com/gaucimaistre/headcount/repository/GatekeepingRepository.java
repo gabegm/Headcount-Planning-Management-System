@@ -3,6 +3,7 @@ package com.gaucimaistre.headcount.repository;
 import com.gaucimaistre.headcount.mapper.GatekeepingRowMapper;
 import com.gaucimaistre.headcount.model.Gatekeeping;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class GatekeepingRepository {
@@ -26,8 +28,10 @@ public class GatekeepingRepository {
 
     public Optional<Gatekeeping> findById(int id) {
         String sql = SELECT_ALL_COLUMNS + "WHERE id = :id";
-        return jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
+        Optional<Gatekeeping> result = jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
                 .stream().findFirst();
+        if (result.isEmpty()) log.debug("Gatekeeping not found with id={}", id);
+        return result;
     }
 
     public List<Gatekeeping> findAll() {
@@ -45,6 +49,7 @@ public class GatekeepingRepository {
     }
 
     public int save(Gatekeeping gatekeeping) {
+        log.debug("Saving {}: {}", "gatekeeping", gatekeeping.date());
         String sql = """
                 INSERT INTO gatekeeping (date, submission_deadline, notes)
                 VALUES (:date, :submissionDeadline, :notes)
@@ -59,6 +64,7 @@ public class GatekeepingRepository {
     }
 
     public void update(Gatekeeping gatekeeping) {
+        log.debug("Updating {} id={}", "gatekeeping", gatekeeping.id());
         String sql = """
                 UPDATE gatekeeping
                 SET date = :date, submission_deadline = :submissionDeadline, notes = :notes
@@ -72,6 +78,7 @@ public class GatekeepingRepository {
     }
 
     public void delete(int id) {
+        log.debug("Deleting {} id={}", "gatekeeping", id);
         jdbc.update("DELETE FROM gatekeeping WHERE id = :id", new MapSqlParameterSource("id", id));
     }
 }

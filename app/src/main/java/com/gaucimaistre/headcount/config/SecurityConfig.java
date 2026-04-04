@@ -1,6 +1,8 @@
 package com.gaucimaistre.headcount.config;
 
 import com.gaucimaistre.headcount.security.UserDetailsServiceImpl;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +20,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 import javax.sql.DataSource;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -29,6 +32,11 @@ public class SecurityConfig {
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, DataSource dataSource) {
         this.userDetailsService = userDetailsService;
         this.dataSource = dataSource;
+    }
+
+    @PostConstruct
+    void logConfig() {
+        log.info("Security configuration initialised");
     }
 
     @Bean

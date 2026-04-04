@@ -38,13 +38,11 @@
                         <span class="fw-semibold" th:text="${s.positionId}">—</span>
                     </td>
                     <td th:text="${#temporals.format(s.effectiveDate, 'dd MMM yyyy')}">—</td>
-                    <td th:text="${s.reasonId}">—</td>
+                    <td th:text="${s.reasonName}">—</td>
                     <td>
-                        <!--/* Map numeric statusId to a meaningful badge.
-                             Colour is best-effort until status names are joined server-side. */-->
                         <span class="badge"
                               th:classappend="${s.statusId == 2} ? 'bg-success' : (${s.statusId == 3} ? 'bg-danger' : 'bg-warning text-dark')"
-                              th:text="${s.statusId == 2} ? 'Approved' : (${s.statusId == 3} ? 'Rejected' : 'On Hold')">
+                              th:text="${s.statusName}">
                             On Hold
                         </span>
                     </td>
@@ -55,12 +53,7 @@
                         </a>
                     </td>
                 </tr>
-                <tr th:if="${#lists.isEmpty(submissions)}">
-                    <td colspan="6" class="text-center text-muted py-4">
-                        <i class="bi bi-inbox fs-4 d-block mb-2"></i>
-                        No submissions found. <a th:href="@{/submission/create}">Create one?</a>
-                    </td>
-                </tr>
+
             </tbody>
         </table>
     </div>
@@ -70,7 +63,12 @@
 <th:block layout:fragment="scripts-extra">
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            new DataTable('#submissionsTable', window.defaultDataTableConfig);
+            new DataTable('#submissionsTable', Object.assign({}, window.defaultDataTableConfig, {
+                language: {
+                    emptyTable: 'No submissions found. <a href="/submissions/create">Create one?</a>'
+                },
+                columnDefs: [{ orderable: false, targets: -1 }]
+            }));
         });
     </script>
 </th:block>

@@ -3,6 +3,7 @@ package com.gaucimaistre.headcount.repository;
 import com.gaucimaistre.headcount.mapper.PageRowMapper;
 import com.gaucimaistre.headcount.model.Page;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class PageRepository {
@@ -36,6 +38,7 @@ public class PageRepository {
     }
 
     public int save(Page page) {
+        log.debug("Saving {}: {}", "page", page.title());
         String sql = """
                 INSERT INTO page (name, title, body)
                 VALUES (:name, :title, :body)
@@ -50,6 +53,7 @@ public class PageRepository {
     }
 
     public void update(Page page) {
+        log.debug("Updating {} id={}", "page", page.id());
         String sql = """
                 UPDATE page
                 SET name = :name, title = :title, body = :body, edited = now()
@@ -63,6 +67,7 @@ public class PageRepository {
     }
 
     public void delete(int id) {
+        log.debug("Deleting {} id={}", "page", id);
         jdbc.update("DELETE FROM page WHERE id = :id", new MapSqlParameterSource("id", id));
     }
 }

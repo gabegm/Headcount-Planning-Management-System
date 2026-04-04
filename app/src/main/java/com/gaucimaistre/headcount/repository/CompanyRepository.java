@@ -3,6 +3,7 @@ package com.gaucimaistre.headcount.repository;
 import com.gaucimaistre.headcount.mapper.CompanyRowMapper;
 import com.gaucimaistre.headcount.model.Company;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class CompanyRepository {
@@ -25,11 +27,14 @@ public class CompanyRepository {
 
     public Optional<Company> findById(int id) {
         String sql = "SELECT id, exchange_rate_id, name FROM company WHERE id = :id";
-        return jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
+        Optional<Company> result = jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
                 .stream().findFirst();
+        if (result.isEmpty()) log.debug("Company not found with id={}", id);
+        return result;
     }
 
     public int save(Company company) {
+        log.debug("Saving {}: {}", "company", company.name());
         String sql = """
                 INSERT INTO company (exchange_rate_id, name) VALUES (:exchangeRateId, :name)
                 """;
@@ -42,6 +47,7 @@ public class CompanyRepository {
     }
 
     public void update(Company company) {
+        log.debug("Updating {} id={}", "company", company.id());
         String sql = """
                 UPDATE company SET exchange_rate_id = :exchangeRateId, name = :name WHERE id = :id
                 """;
@@ -52,6 +58,7 @@ public class CompanyRepository {
     }
 
     public void delete(int id) {
+        log.debug("Deleting {} id={}", "company", id);
         jdbc.update("DELETE FROM company WHERE id = :id", new MapSqlParameterSource("id", id));
     }
 }

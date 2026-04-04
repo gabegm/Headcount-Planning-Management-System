@@ -4,6 +4,7 @@ import com.gaucimaistre.headcount.mapper.UserRowMapper;
 import com.gaucimaistre.headcount.model.User;
 import com.gaucimaistre.headcount.model.enums.UserType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class UserRepository {
@@ -27,8 +29,10 @@ public class UserRepository {
                 FROM "user"
                 WHERE id = :id
                 """;
-        return jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
+        Optional<User> result = jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
                 .stream().findFirst();
+        if (result.isEmpty()) log.debug("User not found with id={}", id);
+        return result;
     }
 
     public Optional<User> findByEmail(String email) {
@@ -37,8 +41,10 @@ public class UserRepository {
                 FROM "user"
                 WHERE email = :email
                 """;
-        return jdbc.query(sql, new MapSqlParameterSource("email", email), rowMapper)
+        Optional<User> result = jdbc.query(sql, new MapSqlParameterSource("email", email), rowMapper)
                 .stream().findFirst();
+        if (result.isEmpty()) log.debug("User not found with email={}", email);
+        return result;
     }
 
     public Optional<User> findByPasswordResetToken(String token) {
@@ -47,8 +53,10 @@ public class UserRepository {
                 FROM "user"
                 WHERE password_reset_token = :token
                 """;
-        return jdbc.query(sql, new MapSqlParameterSource("token", token), rowMapper)
+        Optional<User> result = jdbc.query(sql, new MapSqlParameterSource("token", token), rowMapper)
                 .stream().findFirst();
+        if (result.isEmpty()) log.debug("User not found with password-reset-token");
+        return result;
     }
 
     public List<User> findAll() {
@@ -81,6 +89,7 @@ public class UserRepository {
     }
 
     public int save(User user) {
+        log.debug("Saving {}: {}", "user", user.email());
         String sql = """
                 INSERT INTO "user" (email, password, password_reset_token, type, active)
                 VALUES (:email, :password, :passwordResetToken, :type, :active)
@@ -97,6 +106,7 @@ public class UserRepository {
     }
 
     public void update(User user) {
+        log.debug("Updating {} id={}", "user", user.id());
         String sql = """
                 UPDATE "user"
                 SET email = :email,
@@ -117,6 +127,7 @@ public class UserRepository {
     }
 
     public void updatePassword(int id, String hashedPassword) {
+        log.debug("Updating password for user id={}", id);
         String sql = """
                 UPDATE "user" SET password = :password WHERE id = :id
                 """;
@@ -125,6 +136,7 @@ public class UserRepository {
     }
 
     public void clearPasswordResetToken(int id) {
+        log.debug("Clearing password-reset-token for user id={}", id);
         String sql = """
                 UPDATE "user" SET password_reset_token = NULL WHERE id = :id
                 """;
@@ -132,6 +144,7 @@ public class UserRepository {
     }
 
     public void setPasswordResetToken(int id, String token) {
+        log.debug("Setting password-reset-token for user id={}", id);
         String sql = """
                 UPDATE "user" SET password_reset_token = :token WHERE id = :id
                 """;
@@ -154,6 +167,7 @@ public class UserRepository {
     }
 
     public void addFunction(int userId, int functionId) {
+        log.debug("Adding function id={} to user id={}", functionId, userId);
         String sql = """
                 INSERT INTO user_function (user_id, function_id) VALUES (:userId, :functionId)
                 ON CONFLICT DO NOTHING
@@ -163,6 +177,7 @@ public class UserRepository {
     }
 
     public void removeAllFunctions(int userId) {
+        log.debug("Removing all functions for user id={}", userId);
         String sql = """
                 DELETE FROM user_function WHERE user_id = :userId
                 """;
@@ -170,6 +185,7 @@ public class UserRepository {
     }
 
     public void clearAllPasswordResetTokens() {
+        log.debug("Clearing all password-reset-tokens");
         jdbc.update("UPDATE \"user\" SET password_reset_token = NULL", new MapSqlParameterSource());
     }
 }

@@ -2,6 +2,7 @@ package com.gaucimaistre.headcount.security;
 
 import com.gaucimaistre.headcount.model.User;
 import com.gaucimaistre.headcount.model.enums.UserType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.List;
  * Exposes getUserId() and getUserType() for use in controllers
  * via @AuthenticationPrincipal AppUserDetails.
  */
+@Slf4j
 public class AppUserDetails implements UserDetails {
 
     private final User user;
