@@ -34,7 +34,9 @@ class DashboardControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/dashboard/1")
                         .with(user(adminUserDetails())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("text/html"));
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("fteChart")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("costChart")));
     }
 
     @Test

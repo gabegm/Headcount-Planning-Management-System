@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title th:text="${function != null ? function.name + ' — Dashboard' : 'Dashboard'}">Dashboard</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">
+            <i class="bi bi-bar-chart-line me-2 text-primary"></i>
+            <span th:text="${function != null ? function.name : 'Dashboard'}">Dashboard</span>
+        </h1>
+        <a href="/" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Home
+        </a>
+    </div>
+
+    <div id="no-data-alert" class="alert alert-info d-none" role="alert">
+        <i class="bi bi-info-circle me-1"></i>
+        No position data with start dates found for this function. Charts will appear once positions have been configured.
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-6">
+            <div class="card shadow-sm">
+                <div class="card-header fw-semibold">
+                    <i class="bi bi-people me-1"></i> FTE &mdash; Budget vs Actual
+                </div>
+                <div class="card-body p-2">
+                    <div id="fteChart" style="height:320px;">
+                        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"></div> Loading&hellip;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-6">
+            <div class="card shadow-sm">
+                <div class="card-header fw-semibold">
+                    <i class="bi bi-currency-euro me-1"></i> Cost &mdash; Budget vs Actual
+                </div>
+                <div class="card-body p-2">
+                    <div id="costChart" style="height:320px;">
+                        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"></div> Loading&hellip;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+<th:block layout:fragment="scripts-extra">
+    <script th:inline="javascript">
+        (async function () {
+            const functionId = /*[[${function != null ? function.id : 0}]]*/ 0;
+
+            let data;
+            try {
+                const resp = await fetch('/dashboard/render/' + functionId);
+                if (!resp.ok) {
+                    showNoData();
+                    return;
+                }
+                data = await resp.json();
+            } catch (e) {
+                showNoData();
+                return;
+            }
+
+            function toTraces(budget, actual, label) {
+                const traces = [];
+                const bEntries = Object.entries(budget || {});
+                const aEntries = Object.entries(actual || {});
+                if (bEntries.length) {
+                    traces.push({
+                        x: bEntries.map(e => e[0]),
+                        y: bEntries.map(e => e[1]),
+                        mode: 'lines+markers',
+                        name: 'Budget ' + label,
+                        line: { color: '#0d6efd', width: 2 },
+                        marker: { size: 6 }
+                    });
+                }
+                if (aEntries.length) {
+                    traces.push({
+                        x: aEntries.map(e => e[0]),
+                        y: aEntries.map(e => e[1]),
+                        mode: 'lines+markers',
+                        name: 'Actual ' + label,
+                        line: { color: '#198754', width: 2, dash: 'dot' },
+                        marker: { size: 6 }
+                    });
+                }
+                return traces;
+            }
+
+            const commonLayout = {
+                margin: { t: 20, l: 60, r: 20, b: 60 },
+                legend: { orientation: 'h', y: -0.3 },
+                plot_bgcolor: 'transparent',
+                paper_bgcolor: 'transparent',
+                font: { family: 'inherit', size: 12 }
+            };
+            const commonConfig = { responsive: true, displayModeBar: false };
+
+            const fteTraces  = toTraces(data.budgetFte,  data.actualFte,  'FTE');
+            const costTraces = toTraces(data.budgetCost, data.actualCost, 'Cost');
+
+            if (!fteTraces.length && !costTraces.length) {
+                showNoData();
+                return;
+            }
+
+            if (fteTraces.length) {
+                Plotly.newPlot('fteChart',  fteTraces,  { ...commonLayout, yaxis: { title: 'FTE' } },  commonConfig);
+            } else {
+                document.getElementById('fteChart').innerHTML = '<p class="text-muted text-center mt-4">No FTE data available.</p>';
+            }
+
+            if (costTraces.length) {
+                Plotly.newPlot('costChart', costTraces, { ...commonLayout, yaxis: { title: 'Cost (€)' } }, commonConfig);
+            } else {
+                document.getElementById('costChart').innerHTML = '<p class="text-muted text-center mt-4">No cost data available.</p>';
+            }
+
+            function showNoData() {
+                document.getElementById('no-data-alert').classList.remove('d-none');
+                document.getElementById('fteChart').innerHTML  = '';
+                document.getElementById('costChart').innerHTML = '';
+            }
+        })();
+    </script>
+</th:block>
+</body>
+</html>

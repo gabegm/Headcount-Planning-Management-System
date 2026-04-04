@@ -26,10 +26,10 @@ public class DashboardController {
     public String dashboard(@PathVariable int functionId,
                             @AuthenticationPrincipal AppUserDetails principal,
                             Model model) {
+        log.debug("Dashboard requested for function {} by user {}", functionId, principal.getUserId());
         functionService.findById(functionId).ifPresent(f -> model.addAttribute("function", f));
-        model.addAttribute("chartData",
-                dashboardService.getChartData(principal.getUserId(), principal.getUserType(), functionId));
-        return "index";
+        model.addAttribute("plotlyEnabled", true);
+        return "dashboard/index";
     }
 
     @GetMapping("/dashboard/render/{functionId}")
