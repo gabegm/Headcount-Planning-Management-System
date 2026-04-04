@@ -23,4 +23,16 @@ public class SubmissionStatusService {
     public Optional<SubmissionStatus> findById(int id) {
         return submissionStatusRepository.findById(id);
     }
+
+    public void create(SubmissionStatus status) {
+        submissionStatusRepository.save(status);
+    }
+
+    public void update(int id, SubmissionStatus status) {
+        submissionStatusRepository.update(new SubmissionStatus(id, status.name()));
+    }
+
+    public void delete(int id) {
+        submissionStatusRepository.delete(id);
+    }
 }

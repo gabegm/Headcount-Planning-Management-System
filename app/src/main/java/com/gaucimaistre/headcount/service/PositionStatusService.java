@@ -23,4 +23,16 @@ public class PositionStatusService {
     public Optional<PositionStatus> findById(int id) {
         return positionStatusRepository.findById(id);
     }
+
+    public void create(PositionStatus status) {
+        positionStatusRepository.save(status);
+    }
+
+    public void update(int id, PositionStatus status) {
+        positionStatusRepository.update(new PositionStatus(id, status.name()));
+    }
+
+    public void delete(int id) {
+        positionStatusRepository.delete(id);
+    }
 }

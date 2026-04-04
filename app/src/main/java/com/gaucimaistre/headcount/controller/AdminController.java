@@ -63,6 +63,7 @@ public class AdminController {
     public String userForm(@PathVariable int id, Model model) {
         userService.findById(id).ifPresent(u -> model.addAttribute("user", u));
         model.addAttribute("functions", functionService.findAll());
+        model.addAttribute("userFunctions", userService.getFunctionIds(id));
         return "admin/user :: editForm";
     }
 
@@ -396,6 +397,7 @@ public class AdminController {
     @GetMapping("/positions/{id}/edit-form")
     public String adminPositionForm(@PathVariable int id, Model model) {
         adminPositionService.findById(id).ifPresent(p -> model.addAttribute("position", p));
+        model.addAttribute("positionStatuses", positionStatusService.findAll());
         return "admin/position :: editForm";
     }
 
@@ -493,7 +495,7 @@ public class AdminController {
         return "redirect:/admin/gatekeeping";
     }
 
-    @GetMapping("/gatekeeping/{id}/form")
+    @GetMapping("/gatekeeping/{id}/edit-form")
     public String gatekeepingForm(@PathVariable int id, Model model) {
         gatekeepingService.findById(id).ifPresent(g -> model.addAttribute("gatekeeping", g));
         return "admin/gatekeeping :: editForm";
@@ -586,10 +588,100 @@ public class AdminController {
         return "admin/submission-status";
     }
 
+    @PostMapping("/submission-statuses")
+    public String createSubmissionStatus(@ModelAttribute SubmissionStatus status,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            submissionStatusService.create(status);
+            redirectAttributes.addFlashAttribute("successMessage", "Submission status created.");
+        } catch (Exception e) {
+            log.error("Failed to create submission status", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create submission status.");
+        }
+        return "redirect:/admin/submission-statuses";
+    }
+
+    @GetMapping("/submission-statuses/{id}/edit-form")
+    public String submissionStatusEditForm(@PathVariable int id, Model model) {
+        submissionStatusService.findById(id).ifPresent(s -> model.addAttribute("status", s));
+        return "admin/submission-status :: editForm";
+    }
+
+    @PostMapping("/submission-statuses/{id}/update")
+    public String updateSubmissionStatus(@PathVariable int id,
+                                         @ModelAttribute SubmissionStatus status,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            submissionStatusService.update(id, status);
+            redirectAttributes.addFlashAttribute("successMessage", "Submission status updated.");
+        } catch (Exception e) {
+            log.error("Failed to update submission status {}", id, e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update submission status.");
+        }
+        return "redirect:/admin/submission-statuses";
+    }
+
+    @PostMapping("/submission-statuses/{id}/delete")
+    public String deleteSubmissionStatus(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        try {
+            submissionStatusService.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Submission status deleted.");
+        } catch (Exception e) {
+            log.error("Failed to delete submission status {}", id, e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete submission status.");
+        }
+        return "redirect:/admin/submission-statuses";
+    }
+
     @GetMapping("/position-statuses")
     public String positionStatuses(Model model) {
         model.addAttribute("statuses", positionStatusService.findAll());
         return "admin/position-status";
+    }
+
+    @PostMapping("/position-statuses")
+    public String createPositionStatus(@ModelAttribute PositionStatus status,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            positionStatusService.create(status);
+            redirectAttributes.addFlashAttribute("successMessage", "Position status created.");
+        } catch (Exception e) {
+            log.error("Failed to create position status", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create position status.");
+        }
+        return "redirect:/admin/position-statuses";
+    }
+
+    @GetMapping("/position-statuses/{id}/edit-form")
+    public String positionStatusEditForm(@PathVariable int id, Model model) {
+        positionStatusService.findById(id).ifPresent(s -> model.addAttribute("status", s));
+        return "admin/position-status :: editForm";
+    }
+
+    @PostMapping("/position-statuses/{id}/update")
+    public String updatePositionStatus(@PathVariable int id,
+                                       @ModelAttribute PositionStatus status,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            positionStatusService.update(id, status);
+            redirectAttributes.addFlashAttribute("successMessage", "Position status updated.");
+        } catch (Exception e) {
+            log.error("Failed to update position status {}", id, e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update position status.");
+        }
+        return "redirect:/admin/position-statuses";
+    }
+
+    @PostMapping("/position-statuses/{id}/delete")
+    public String deletePositionStatus(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        try {
+            positionStatusService.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Position status deleted.");
+        } catch (Exception e) {
+            log.error("Failed to delete position status {}", id, e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete position status.");
+        }
+        return "redirect:/admin/position-statuses";
     }
 
     // -------------------------------------------------------------------------
@@ -636,7 +728,7 @@ public class AdminController {
         return "redirect:/admin/faq";
     }
 
-    @GetMapping("/faq/{id}/form")
+    @GetMapping("/faq/{id}/edit-form")
     public String faqForm(@PathVariable int id, Model model) {
         faqService.findById(id).ifPresent(f -> model.addAttribute("faq", f));
         return "admin/faq :: editForm";
