@@ -59,6 +59,23 @@ public class AdminController {
         return "admin/user";
     }
 
+    @PostMapping("/users")
+    public String createUser(@RequestParam String email,
+                             @RequestParam String password,
+                             @RequestParam String role,
+                             @RequestParam(defaultValue = "true") boolean active,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            UserType type = UserType.valueOf(role.toUpperCase());
+            userService.createUser(email, password, type, active);
+            redirectAttributes.addFlashAttribute("successMessage", "User created successfully.");
+        } catch (Exception e) {
+            log.error("Failed to create user", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create user: " + e.getMessage());
+        }
+        return "redirect:/admin/users";
+    }
+
     @GetMapping("/users/{id}/edit-form")
     public String userForm(@PathVariable int id, Model model) {
         userService.findById(id).ifPresent(u -> model.addAttribute("user", u));

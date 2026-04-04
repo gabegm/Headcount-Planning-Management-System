@@ -38,6 +38,14 @@ public class UserService {
         return userRepository.findAllActive();
     }
 
+    public int createUser(String email, String rawPassword, UserType type, boolean active) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("Email address is already registered: " + email);
+        }
+        String hashed = passwordEncoder.encode(rawPassword);
+        return userRepository.save(new User(0, email, hashed, null, type, active));
+    }
+
     public int register(String email, String rawPassword) {
         if (email == null || !email.toLowerCase().endsWith("@gaucimaistre.com")) {
             throw new IllegalArgumentException("Registration is restricted to @gaucimaistre.com email addresses");
