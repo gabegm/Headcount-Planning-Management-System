@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<dl th:fragment="detail-card" class="row mb-0 small">
+    <th:block th:if="${position != null}">
+        <dt class="col-5 text-muted">Number</dt>
+        <dd class="col-7" th:text="${position.number}">—</dd>
+
+        <dt class="col-5 text-muted">Title</dt>
+        <dd class="col-7" th:text="${position.title}">—</dd>
+
+        <dt class="col-5 text-muted">Holder</dt>
+        <dd class="col-7" th:text="${position.holder ?: '—'}">—</dd>
+
+        <dt class="col-5 text-muted">Hours</dt>
+        <dd class="col-7" th:text="${position.hours ?: '—'}">—</dd>
+
+        <dt class="col-5 text-muted">Start Date</dt>
+        <dd class="col-7" th:text="${position.startDate ?: '—'}">—</dd>
+
+        <dt class="col-5 text-muted">End Date</dt>
+        <dd class="col-7" th:text="${position.endDate ?: '—'}">—</dd>
+
+        <dt class="col-5 text-muted">Salary</dt>
+        <dd class="col-7" th:text="${'€' + #numbers.formatDecimal(position.salary, 1, 2)}">—</dd>
+
+        <dt class="col-5 text-muted">Func. Reporting</dt>
+        <dd class="col-7" th:text="${position.functionalReportingLine ?: '—'}">—</dd>
+
+        <dt class="col-5 text-muted">Disc. Reporting</dt>
+        <dd class="col-7" th:text="${position.disciplinaryReportingLine ?: '—'}">—</dd>
+    </th:block>
+    <th:block th:unless="${position != null}">
+        <dt class="col-12 text-muted text-center">Position not found</dt>
+    </th:block>
+</dl>
+</body>
+</html>

@@ -30,8 +30,14 @@ public class PositionController {
     @GetMapping
     public String index(@AuthenticationPrincipal AppUserDetails principal, Model model) {
         model.addAttribute("positions",
-                positionService.findAllByUserAccess(principal.getUserId(), principal.getUserType()));
+                positionService.findAllViewsByUserAccess(principal.getUserId(), principal.getUserType()));
         return "position/index";
+    }
+
+    @GetMapping("/{number}/details")
+    public String details(@PathVariable String number, Model model) {
+        positionService.findByNumber(number).ifPresent(p -> model.addAttribute("position", p));
+        return "position/details :: detail-card";
     }
 
     @GetMapping("/create")

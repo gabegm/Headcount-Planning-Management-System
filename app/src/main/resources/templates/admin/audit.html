@@ -63,7 +63,7 @@
 </div>
 
 <th:block layout:fragment="scripts-extra">
-    <script>
+    <script th:inline="none">
         const auditTable = new DataTable('#auditTable', {
             ...window.defaultDataTableConfig,
             scrollX: true,

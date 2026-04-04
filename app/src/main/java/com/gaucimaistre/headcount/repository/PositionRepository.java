@@ -84,6 +84,14 @@ public class PositionRepository {
         return jdbc.query(sql, new MapSqlParameterSource("functionIds", functionIds), rowMapper);
     }
 
+    public List<PositionView> findAllViewsByFunctionIds(List<Integer> functionIds) {
+        if (functionIds == null || functionIds.isEmpty()) {
+            return List.of();
+        }
+        String sql = SELECT_VIEW_COLUMNS + "WHERE p.is_budget = FALSE AND p.function_id IN (:functionIds) ORDER BY p.id";
+        return jdbc.query(sql, new MapSqlParameterSource("functionIds", functionIds), viewRowMapper);
+    }
+
     public List<Position> findBudget() {
         String sql = SELECT_ALL_COLUMNS + "WHERE is_budget = TRUE ORDER BY id";
         return jdbc.query(sql, rowMapper);
