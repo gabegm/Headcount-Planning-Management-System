@@ -78,9 +78,9 @@
                             <tbody>
                                 <tr th:each="s : ${recentSubmissions}">
                                     <td th:text="${#temporals.format(s.submitted, 'dd/MM/yyyy')}"></td>
-                                    <td th:text="${s.submitter}"></td>
+                                    <td th:text="${s.submitterEmail}"></td>
                                     <td>
-                                        <span class="badge bg-primary" th:text="${s.status}"></span>
+                                        <span class="badge bg-primary" th:text="${s.statusName}"></span>
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(recentSubmissions)}">

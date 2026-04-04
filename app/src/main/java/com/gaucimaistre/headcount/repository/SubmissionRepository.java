@@ -26,11 +26,12 @@ public class SubmissionRepository {
     private final SubmissionViewRowMapper viewRowMapper;
 
     private static final String SELECT_VIEW_COLUMNS = """
-            SELECT s.id, s.submitter_id, s.gatekeeping_id, s.position_id,
+            SELECT s.id, s.submitter_id, u.email AS submitter_email, s.gatekeeping_id, s.position_id,
                    s.status_id,  ss.name AS status_name,
                    s.reason_id,  sr.name AS reason_name,
                    s.rationale, s.effective_date, s.submitted, s.comment
             FROM submission s
+            JOIN "user" u ON u.id = s.submitter_id
             JOIN submission_status ss ON ss.id = s.status_id
             JOIN submission_reason sr ON sr.id = s.reason_id
             """;

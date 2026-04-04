@@ -44,7 +44,16 @@ public class AdminController {
 
     @GetMapping
     public String dashboard(Model model) {
-        model.addAttribute("dashboard", adminService.getDashboardData());
+        var submissions = adminSubmissionService.findAllViews();
+        var gatekeepings = gatekeepingService.findAll();
+        model.addAttribute("totalPositions",   adminPositionService.findAll().size());
+        model.addAttribute("totalSubmissions", submissions.size());
+        model.addAttribute("totalUsers",       userService.findAll().size());
+        model.addAttribute("openGatekeepings", gatekeepings.stream()
+                .filter(g -> g.submissionDeadline() != null && !g.submissionDeadline().isBefore(java.time.LocalDate.now()))
+                .count());
+        model.addAttribute("recentSubmissions", submissions.stream().limit(5).toList());
+        model.addAttribute("recentGatekeepings", gatekeepings.stream().limit(5).toList());
         return "admin/index";
     }
 

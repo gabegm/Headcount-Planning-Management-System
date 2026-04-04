@@ -20,6 +20,10 @@ public class AdminSubmissionService {
         return submissionService.findAll();
     }
 
+    public List<com.gaucimaistre.headcount.model.SubmissionView> findAllViews() {
+        return submissionService.findAllViews();
+    }
+
     public Optional<Submission> findById(int id) {
         return submissionService.findById(id);
     }

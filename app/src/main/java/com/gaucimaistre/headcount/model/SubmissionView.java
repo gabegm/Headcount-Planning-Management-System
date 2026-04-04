@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 public record SubmissionView(
         int id,
         int submitterId,
+        String submitterEmail,
         int gatekeepingId,
         String positionId,
         int statusId,

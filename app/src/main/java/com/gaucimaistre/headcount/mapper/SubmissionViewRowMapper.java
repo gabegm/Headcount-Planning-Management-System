@@ -19,6 +19,7 @@ public class SubmissionViewRowMapper implements RowMapper<SubmissionView> {
         return new SubmissionView(
                 rs.getInt("id"),
                 rs.getInt("submitter_id"),
+                rs.getString("submitter_email"),
                 rs.getInt("gatekeeping_id"),
                 rs.getString("position_id"),
                 rs.getInt("status_id"),

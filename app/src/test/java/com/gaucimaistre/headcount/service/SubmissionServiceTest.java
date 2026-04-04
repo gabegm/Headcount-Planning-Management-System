@@ -124,7 +124,7 @@ class SubmissionServiceTest {
     }
 
     private SubmissionView buildSubmissionView(int id, int submitterId) {
-        return new SubmissionView(id, submitterId, 1, "POS-001", 2, "Approved",
+        return new SubmissionView(id, submitterId, "user@example.com", 1, "POS-001", 2, "Approved",
                 1, "Backfill", "Test rationale", LocalDate.of(2026, 1, 1), null, null);
     }
 }
