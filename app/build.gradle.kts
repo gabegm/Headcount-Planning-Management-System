@@ -56,7 +56,7 @@ dependencies {
     implementation("com.opencsv:opencsv:5.9")
 
     // HTML sanitisation
-    implementation("org.owasp.antisamy:antisamy:1.7.7")
+    implementation("org.owasp.antisamy:antisamy:1.7.8")
 
     // Thymeleaf Layout Dialect — layout:decorate (equivalent to Jinja2 {% extends %})
     implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.4.0")
