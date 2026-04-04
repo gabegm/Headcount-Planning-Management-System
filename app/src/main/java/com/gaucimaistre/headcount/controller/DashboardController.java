@@ -2,12 +2,10 @@ package com.gaucimaistre.headcount.controller;
 
 import com.gaucimaistre.headcount.security.AppUserDetails;
 import com.gaucimaistre.headcount.service.DashboardService;
-import com.gaucimaistre.headcount.service.FunctionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,17 +18,6 @@ import java.util.Map;
 public class DashboardController {
 
     private final DashboardService dashboardService;
-    private final FunctionService functionService;
-
-    @GetMapping("/dashboard/{functionId}")
-    public String dashboard(@PathVariable int functionId,
-                            @AuthenticationPrincipal AppUserDetails principal,
-                            Model model) {
-        log.debug("Dashboard requested for function {} by user {}", functionId, principal.getUserId());
-        functionService.findById(functionId).ifPresent(f -> model.addAttribute("function", f));
-        model.addAttribute("plotlyEnabled", true);
-        return "dashboard/index";
-    }
 
     @GetMapping("/dashboard/render/{functionId}")
     @ResponseBody

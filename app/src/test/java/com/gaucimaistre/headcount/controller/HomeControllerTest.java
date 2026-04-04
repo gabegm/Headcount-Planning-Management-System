@@ -40,10 +40,13 @@ class HomeControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void home_containsFunctionLinks() throws Exception {
+    void home_containsChartsAndFunctionDropdown() throws Exception {
         mockMvc.perform(get("/")
                         .with(user(adminUserDetails())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("text/html"));
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("fteChart")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("costChart")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("functionSelect")));
     }
 }

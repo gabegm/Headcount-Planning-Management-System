@@ -22,7 +22,7 @@ public class DashboardService {
     public DashboardData getChartData(int userId, UserType userType, Integer functionId) {
         List<Position> positions = positionService.findAll(userId, userType);
 
-        if (functionId != null) {
+        if (functionId != null && functionId != 0) {
             positions = positions.stream()
                     .filter(p -> p.functionId() == functionId)
                     .toList();

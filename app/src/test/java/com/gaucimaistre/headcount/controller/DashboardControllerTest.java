@@ -23,20 +23,10 @@ class DashboardControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void dashboard_whenUnauthenticated_redirectsToLogin() throws Exception {
-        mockMvc.perform(get("/dashboard/1"))
+    void dashboardRender_whenUnauthenticated_redirectsToLogin() throws Exception {
+        mockMvc.perform(get("/dashboard/render/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**/auth/login"));
-    }
-
-    @Test
-    void dashboard_whenAuthenticated_returnsOk() throws Exception {
-        mockMvc.perform(get("/dashboard/1")
-                        .with(user(adminUserDetails())))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("text/html"))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("fteChart")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("costChart")));
     }
 
     @Test
@@ -46,4 +36,13 @@ class DashboardControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json"));
     }
+
+    @Test
+    void dashboardRender_withAllFunctions_returnsJson() throws Exception {
+        mockMvc.perform(get("/dashboard/render/0")
+                        .with(user(adminUserDetails())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json"));
+    }
 }
+

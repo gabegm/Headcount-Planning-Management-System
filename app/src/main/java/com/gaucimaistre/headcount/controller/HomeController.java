@@ -22,8 +22,11 @@ public class HomeController {
     @GetMapping
     public String index(@AuthenticationPrincipal AppUserDetails principal, Model model) {
         log.debug("Home page requested by user {}", principal.getUserId());
-        model.addAttribute("functions",
-                homeService.getFunctionsForUser(principal.getUserId(), principal.getUserType()));
+        var functions = homeService.getFunctionsForUser(principal.getUserId(), principal.getUserType());
+        model.addAttribute("functions", functions);
+        if (!functions.isEmpty()) {
+            model.addAttribute("plotlyEnabled", true);
+        }
         return "index";
     }
 }
