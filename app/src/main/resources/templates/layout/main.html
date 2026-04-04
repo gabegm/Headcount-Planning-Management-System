@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title layout:title-pattern="$CONTENT_TITLE - Gatekeeping">Gatekeeping</title>
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <!-- Apply saved theme before CSS renders to prevent flash -->
+    <script>document.documentElement.setAttribute('data-bs-theme', localStorage.getItem('theme') || 'light');</script>
 
     <!-- Bootstrap 5.3 -->
     <link rel="stylesheet"
@@ -75,6 +77,11 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <button id="themeToggle" class="btn btn-link nav-link" title="Toggle dark mode">
+                        <i id="themeIcon" class="bi bi-moon-stars-fill"></i>
+                    </button>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/help}"><i class="bi bi-question-circle"></i> Help</a>
                 </li>
@@ -152,5 +159,23 @@
     };
 </script>
 <th:block layout:fragment="scripts-extra"/>
+<script>
+    (function () {
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            var icon = document.getElementById('themeIcon');
+            if (icon) icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+        }
+        applyTheme(localStorage.getItem('theme') || 'light');
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                var next = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', next);
+                applyTheme(next);
+            });
+        }
+    })();
+</script>
 </body>
 </html>

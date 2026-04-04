@@ -7,6 +7,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <title layout:title-pattern="$CONTENT_TITLE - Admin - Gatekeeping">Gatekeeping</title>
+    <!-- Apply saved theme before CSS renders to prevent flash -->
+    <script>document.documentElement.setAttribute('data-bs-theme', localStorage.getItem('theme') || 'light');</script>
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -42,6 +44,11 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto mb-2 mb-md-0">
                 <li class="nav-item">
+                    <button id="themeToggle" class="btn btn-link nav-link" title="Toggle dark mode">
+                        <i id="themeIcon" class="bi bi-moon-stars-fill"></i>
+                    </button>
+                </li>
+                <li class="nav-item">
                     <form th:action="@{/logout}" method="post" class="d-inline">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <button type="submit" class="btn btn-link nav-link">
@@ -60,7 +67,7 @@
 
         <!-- ── Sidebar (desktop: static column; mobile: offcanvas) ─────── -->
         <nav id="sidebarOffcanvas"
-             class="col-md-2 d-md-block sidebar collapse offcanvas-md offcanvas-start bg-white border-end"
+             class="col-md-2 d-md-block sidebar collapse offcanvas-md offcanvas-start bg-body border-end"
              tabindex="-1" aria-label="Admin navigation">
             <div class="offcanvas-header d-md-none border-bottom">
                 <h5 class="offcanvas-title">Navigation</h5>
@@ -259,5 +266,23 @@
 </script>
 
 <th:block layout:fragment="scripts-extra"/>
+<script>
+    (function () {
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            var icon = document.getElementById('themeIcon');
+            if (icon) icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+        }
+        applyTheme(localStorage.getItem('theme') || 'light');
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                var next = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', next);
+                applyTheme(next);
+            });
+        }
+    })();
+</script>
 </body>
 </html>
