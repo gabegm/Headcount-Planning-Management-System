@@ -53,7 +53,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     // CSV import
-    implementation("com.opencsv:opencsv:5.9")
+    implementation("com.opencsv:opencsv:5.12.0")
 
     // HTML sanitisation
     implementation("org.owasp.antisamy:antisamy:1.7.8")
