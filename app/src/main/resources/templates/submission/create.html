@@ -47,7 +47,7 @@
             if (id.length < 6) { this.positionData = null; return; }
             this.loadingPosition = true;
             try {
-                const resp = await fetch('/position/' + encodeURIComponent(id) + '/json');
+                const resp = await fetch('/positions/' + encodeURIComponent(id) + '/json');
                 if (resp.ok) { this.positionData = await resp.json(); }
                 else { this.positionData = null; }
             } catch (_) { this.positionData = null; }

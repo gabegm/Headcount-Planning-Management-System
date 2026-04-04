@@ -38,6 +38,10 @@ public class PositionService {
         return positionRepository.findByNumber(number, false);
     }
 
+    public Optional<PositionView> findViewByNumber(String number) {
+        return positionRepository.findViewByNumber(number);
+    }
+
     public Optional<Position> findById(int id) {
         return positionRepository.findById(id);
     }

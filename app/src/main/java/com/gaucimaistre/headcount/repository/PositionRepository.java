@@ -66,6 +66,12 @@ public class PositionRepository {
                 .stream().findFirst();
     }
 
+    public Optional<PositionView> findViewByNumber(String number) {
+        String sql = SELECT_VIEW_COLUMNS + "WHERE p.number = :number AND p.is_budget = FALSE";
+        return jdbc.query(sql, new MapSqlParameterSource("number", number), viewRowMapper)
+                .stream().findFirst();
+    }
+
     public List<Position> findAll() {
         return jdbc.query(SELECT_ALL_COLUMNS + "ORDER BY id", rowMapper);
     }

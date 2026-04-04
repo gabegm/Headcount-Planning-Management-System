@@ -1,16 +1,19 @@
 package com.gaucimaistre.headcount.controller;
 
 import com.gaucimaistre.headcount.model.Position;
+import com.gaucimaistre.headcount.model.PositionView;
 import com.gaucimaistre.headcount.security.AppUserDetails;
 import com.gaucimaistre.headcount.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
@@ -56,6 +59,36 @@ public class PositionController {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create position.");
         }
         return "redirect:/positions";
+    }
+
+    @GetMapping("/{number}/json")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> positionJson(@PathVariable String number) {
+        return positionService.findViewByNumber(number)
+                .map(p -> {
+                    Map<String, Object> m = new LinkedHashMap<>();
+                    m.put("status",                    p.statusName());
+                    m.put("recruitmentStatus",         p.recruitmentStatusName());
+                    m.put("pillar",                    p.pillarName());
+                    m.put("company",                   p.companyName());
+                    m.put("department",                p.departmentName());
+                    m.put("function",                  p.functionName());
+                    m.put("title",                     p.title());
+                    m.put("functionalReportingLine",   p.functionalReportingLine());
+                    m.put("disciplinaryReportingLine", p.disciplinaryReportingLine());
+                    m.put("holder",                    p.holder());
+                    m.put("hours",                     p.hours());
+                    m.put("startDate",                 p.startDate());
+                    m.put("endDate",                   p.endDate());
+                    m.put("salary",                    p.salary());
+                    m.put("socialSecurityContribution",p.socialSecurityContribution());
+                    m.put("fringeBenefit",             p.fringeBenefit());
+                    m.put("performanceBonus",          p.performanceBonus());
+                    m.put("superBonus",                p.superBonus());
+                    m.put("managementBonus",           p.managementBonus());
+                    return ResponseEntity.ok(m);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/view/{id}")
