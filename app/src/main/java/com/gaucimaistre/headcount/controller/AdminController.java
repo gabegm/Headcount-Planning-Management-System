@@ -377,7 +377,7 @@ public class AdminController {
 
     @GetMapping("/positions")
     public String adminPositions(Model model) {
-        model.addAttribute("positions", adminPositionService.findAll());
+        model.addAttribute("positions", adminPositionService.findAllViews());
         return "admin/position";
     }
 
@@ -450,7 +450,8 @@ public class AdminController {
     // -------------------------------------------------------------------------
 
     @GetMapping("/budget")
-    public String budget() {
+    public String budget(Model model) {
+        model.addAttribute("positions", adminPositionService.findBudgetViews());
         return "admin/budget";
     }
 

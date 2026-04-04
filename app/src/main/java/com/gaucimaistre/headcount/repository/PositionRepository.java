@@ -1,7 +1,9 @@
 package com.gaucimaistre.headcount.repository;
 
 import com.gaucimaistre.headcount.mapper.PositionRowMapper;
+import com.gaucimaistre.headcount.mapper.PositionViewRowMapper;
 import com.gaucimaistre.headcount.model.Position;
+import com.gaucimaistre.headcount.model.PositionView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,6 +20,7 @@ public class PositionRepository {
 
     private final NamedParameterJdbcTemplate jdbc;
     private final PositionRowMapper rowMapper;
+    private final PositionViewRowMapper viewRowMapper;
 
     private static final String SELECT_ALL_COLUMNS = """
             SELECT id, status_id, recruitment_status_id, number, pillar_id, company_id,
@@ -26,6 +29,24 @@ public class PositionRepository {
                    salary, fringe_benefit, social_security_contribution,
                    performance_bonus, super_bonus, management_bonus
             FROM position
+            """;
+
+    private static final String SELECT_VIEW_COLUMNS = """
+            SELECT p.id, ps.name AS status_name, rs.name AS recruitment_status_name,
+                   p.number, pi.name AS pillar_name, c.name AS company_name,
+                   d.name AS department_name, f.name AS function_name,
+                   p.is_budget, p.title, p.functional_reporting_line,
+                   p.disciplinary_reporting_line, p.holder, p.hours,
+                   p.start_date, p.end_date, p.salary, p.fringe_benefit,
+                   p.social_security_contribution, p.performance_bonus,
+                   p.super_bonus, p.management_bonus
+            FROM position p
+            LEFT JOIN position_status ps ON p.status_id = ps.id
+            LEFT JOIN recruitment_status rs ON p.recruitment_status_id = rs.id
+            LEFT JOIN pillar pi ON p.pillar_id = pi.id
+            LEFT JOIN company c ON p.company_id = c.id
+            LEFT JOIN department d ON p.department_id = d.id
+            LEFT JOIN "function" f ON p.function_id = f.id
             """;
 
     public Optional<Position> findById(int id) {
@@ -43,6 +64,16 @@ public class PositionRepository {
 
     public List<Position> findAll() {
         return jdbc.query(SELECT_ALL_COLUMNS + "ORDER BY id", rowMapper);
+    }
+
+    public List<PositionView> findAllViews() {
+        return jdbc.query(SELECT_VIEW_COLUMNS + "WHERE p.is_budget = FALSE ORDER BY p.id",
+                new MapSqlParameterSource(), viewRowMapper);
+    }
+
+    public List<PositionView> findBudgetViews() {
+        return jdbc.query(SELECT_VIEW_COLUMNS + "WHERE p.is_budget = TRUE ORDER BY p.id",
+                new MapSqlParameterSource(), viewRowMapper);
     }
 
     public List<Position> findAllByFunctionIds(List<Integer> functionIds) {

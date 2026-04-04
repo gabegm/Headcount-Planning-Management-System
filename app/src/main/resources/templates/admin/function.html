@@ -22,14 +22,12 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Pillar</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="func : ${functions}">
                     <td th:text="${func.name}"></td>
-                    <td th:text="${func.pillar?.name}"></td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary me-1"
                                 th:attr="hx-get=@{/admin/functions/{id}/edit-form(id=${func.id})}"
@@ -67,15 +65,6 @@
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" name="name" required/>
                         </div>
-                        <div class="mb-3">
-                            <label for="pillarId" class="form-label">Pillar</label>
-                            <select class="form-select" id="pillarId" name="pillarId">
-                                <option value="">— None —</option>
-                                <option th:each="p : ${pillars}"
-                                        th:value="${p.id}"
-                                        th:text="${p.name}"></option>
-                            </select>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -109,7 +98,7 @@
 </th:block>
 
 <div th:fragment="editForm">
-    <form th:if="${function != null}" method="post" th:action="@{/admin/functions/{id}/update(id=${function.id})}">/
+    <form th:if="${function != null}" method="post" th:action="@{/admin/functions/{id}/update(id=${function.id})}">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="mb-3">
             <label for="editName" class="form-label">Name</label>

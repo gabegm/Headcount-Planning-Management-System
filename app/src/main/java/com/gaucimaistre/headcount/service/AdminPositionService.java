@@ -1,6 +1,7 @@
 package com.gaucimaistre.headcount.service;
 
 import com.gaucimaistre.headcount.model.Position;
+import com.gaucimaistre.headcount.model.PositionView;
 import com.gaucimaistre.headcount.model.enums.UserType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,14 @@ public class AdminPositionService {
 
     public List<Position> findAll() {
         return positionService.findAll(0, UserType.ADMIN);
+    }
+
+    public List<PositionView> findAllViews() {
+        return positionService.findAllViews();
+    }
+
+    public List<PositionView> findBudgetViews() {
+        return positionService.findBudgetViews();
     }
 
     public Optional<Position> findById(int id) {

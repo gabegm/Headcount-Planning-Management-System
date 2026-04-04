@@ -1,6 +1,7 @@
 package com.gaucimaistre.headcount.service;
 
 import com.gaucimaistre.headcount.model.Position;
+import com.gaucimaistre.headcount.model.PositionView;
 import com.gaucimaistre.headcount.model.enums.UserType;
 import com.gaucimaistre.headcount.repository.PositionRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,14 @@ public class PositionService {
 
     public List<Position> findBudget() {
         return positionRepository.findBudget();
+    }
+
+    public List<PositionView> findAllViews() {
+        return positionRepository.findAllViews();
+    }
+
+    public List<PositionView> findBudgetViews() {
+        return positionRepository.findBudgetViews();
     }
 
     public int create(Position position) {

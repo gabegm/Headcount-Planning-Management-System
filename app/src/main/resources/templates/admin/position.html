@@ -52,14 +52,14 @@
             <tbody>
                 <tr th:each="pos : ${positions}">
                     <td>
-                        <span class="badge bg-primary" th:text="${pos.status}"></span>
+                        <span class="badge bg-primary" th:text="${pos.statusName}"></span>
                     </td>
-                    <td th:text="${pos.recruitmentStatus}"></td>
+                    <td th:text="${pos.recruitmentStatusName}"></td>
                     <td th:text="${pos.number}"></td>
-                    <td th:text="${pos.pillar?.name}"></td>
-                    <td th:text="${pos.company?.name}"></td>
-                    <td th:text="${pos.department?.name}"></td>
-                    <td th:text="${pos.function?.name}"></td>
+                    <td th:text="${pos.pillarName}"></td>
+                    <td th:text="${pos.companyName}"></td>
+                    <td th:text="${pos.departmentName}"></td>
+                    <td th:text="${pos.functionName}"></td>
                     <td th:text="${pos.title}"></td>
                     <td th:text="${pos.functionalReportingLine}"></td>
                     <td th:text="${pos.disciplinaryReportingLine}"></td>
