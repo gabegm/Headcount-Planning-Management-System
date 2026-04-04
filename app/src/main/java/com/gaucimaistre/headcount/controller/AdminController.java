@@ -692,17 +692,18 @@ public class AdminController {
     @GetMapping("/help")
     public String adminHelp(Model model) {
         helpService.getHelpPage().ifPresent(p -> model.addAttribute("page", p));
+        model.addAttribute("quillEnabled", true);
         return "admin/help";
     }
 
-    @PostMapping("/help/update")
-    public String updateHelp(@ModelAttribute Page page, RedirectAttributes redirectAttributes) {
+    @PostMapping("/help")
+    public String saveHelp(@RequestParam("body") String body, RedirectAttributes redirectAttributes) {
         try {
-            helpService.update(page);
-            redirectAttributes.addFlashAttribute("successMessage", "Help page updated.");
+            helpService.upsert(body);
+            redirectAttributes.addFlashAttribute("successMessage", "Help page saved.");
         } catch (Exception e) {
-            log.error("Failed to update help page", e);
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update help page.");
+            log.error("Failed to save help page", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to save help page.");
         }
         return "redirect:/admin/help";
     }
@@ -714,6 +715,7 @@ public class AdminController {
     @GetMapping("/faq")
     public String adminFaq(Model model) {
         model.addAttribute("faqs", faqService.findAll());
+        model.addAttribute("quillEnabled", true);
         return "admin/faq";
     }
 

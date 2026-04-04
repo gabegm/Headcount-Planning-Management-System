@@ -20,6 +20,17 @@ public class HelpService {
         return pageService.findByNameAndTitle("help", "help");
     }
 
+    public void upsert(String body) {
+        Optional<Page> existing = getHelpPage();
+        if (existing.isPresent()) {
+            Page updated = new Page(existing.get().id(), existing.get().submitted(),
+                    null, "help", "help", body);
+            pageService.update(updated);
+        } else {
+            pageService.create(new Page(0, null, null, "help", "help", body));
+        }
+    }
+
     public void update(Page page) {
         pageService.update(page);
     }
