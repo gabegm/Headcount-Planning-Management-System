@@ -13,7 +13,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Submissions</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
-            <a th:href="@{/submission/create}" class="btn btn-sm btn-primary">
+            <a th:href="@{/submissions/create}" class="btn btn-sm btn-primary">
                 <i class="bi bi-plus-lg me-1"></i>New Submission
             </a>
         </div>
@@ -47,7 +47,7 @@
                         </span>
                     </td>
                     <td>
-                        <a th:href="@{/submission/{id}/change(id=${s.id})}"
+                        <a th:href="@{/submissions/{id}/change(id=${s.id})}"
                            class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-eye me-1"></i>View Changes
                         </a>

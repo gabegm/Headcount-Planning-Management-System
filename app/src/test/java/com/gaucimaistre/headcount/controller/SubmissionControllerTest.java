@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,7 +35,9 @@ class SubmissionControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/submissions")
                         .with(user(adminUserDetails())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("text/html"));
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                // Verify links in the rendered page point to the correct plural paths
+                .andExpect(content().string(containsString("href=\"/submissions/create\"")));
     }
 
     @Test
@@ -49,6 +52,8 @@ class SubmissionControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/submissions/create")
                         .with(user(adminUserDetails())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("text/html"));
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                // Verify form action points to the correct plural path
+                .andExpect(content().string(containsString("action=\"/submissions/create\"")));
     }
 }

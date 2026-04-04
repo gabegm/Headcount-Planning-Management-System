@@ -59,14 +59,14 @@
         <!-- Admin approve / reject actions -->
         <div class="card-footer" sec:authorize="hasRole('ADMIN')">
             <div class="d-flex gap-2">
-                <form th:action="@{/submission/{id}/approve(id=${submission.id})}" method="post" class="d-inline">
+                <form th:action="@{/submissions/{id}/approve(id=${submission.id})}" method="post" class="d-inline">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <button type="submit" class="btn btn-success btn-sm"
                             onclick="return confirm('Approve this submission?')">
                         <i class="bi bi-check-circle me-1"></i>Approve
                     </button>
                 </form>
-                <form th:action="@{/submission/{id}/reject(id=${submission.id})}" method="post" class="d-inline">
+                <form th:action="@{/submissions/{id}/reject(id=${submission.id})}" method="post" class="d-inline">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control form-control-sm"
