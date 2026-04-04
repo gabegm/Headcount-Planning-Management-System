@@ -38,7 +38,7 @@
         init() {
             this.$watch('positionId', (val) => {
                 clearTimeout(this._fetchTimer);
-                if (val.trim().length >= 6) {
+                if (val.trim().length > 0) {
                     this._fetchTimer = setTimeout(() => this.fetchPosition(), 600);
                 } else {
                     this.positionData = null;
@@ -55,7 +55,7 @@
                                                this.reason !== 'Deactivate Position'; },
         async fetchPosition() {
             const id = this.positionId.trim();
-            if (id.length < 6) { this.positionData = null; return; }
+            if (id.length === 0) { this.positionData = null; return; }
             this.loadingPosition = true;
             try {
                 const resp = await fetch('/positions/' + encodeURIComponent(id) + '/json');
