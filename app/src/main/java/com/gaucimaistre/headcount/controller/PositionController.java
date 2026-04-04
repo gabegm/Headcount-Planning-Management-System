@@ -32,9 +32,16 @@ public class PositionController {
     private final RecruitmentStatusService recruitmentStatusService;
 
     @GetMapping
-    public String index(@AuthenticationPrincipal AppUserDetails principal, Model model) {
-        model.addAttribute("positions",
-                positionService.findAllViewsByUserAccess(principal.getUserId(), principal.getUserType()));
+    public String index(@AuthenticationPrincipal AppUserDetails principal,
+                        @RequestParam(required = false) Integer functionId,
+                        Model model) {
+        var positions = functionId != null && functionId > 0
+                ? positionService.findAllViewsByFunctionId(principal.getUserId(), principal.getUserType(), functionId)
+                : positionService.findAllViewsByUserAccess(principal.getUserId(), principal.getUserType());
+        model.addAttribute("positions", positions);
+        if (functionId != null && functionId > 0) {
+            functionService.findById(functionId).ifPresent(f -> model.addAttribute("activeFunction", f));
+        }
         return "position/index";
     }
 

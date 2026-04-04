@@ -11,7 +11,10 @@
 <th:block layout:fragment="content">
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Positions</h1>
+        <h1 class="h2">
+            <span th:if="${activeFunction != null}" th:text="${activeFunction.name + ' — Positions'}">Positions</span>
+            <span th:unless="${activeFunction != null}">Positions</span>
+        </h1>
         <div class="btn-toolbar mb-2 mb-md-0" sec:authorize="hasRole('ADMIN')">
             <a th:href="@{/positions/create}" class="btn btn-outline-primary">
                 <i class="bi bi-plus-square me-1"></i> New

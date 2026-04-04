@@ -65,6 +65,14 @@ public class PositionService {
         return positionRepository.findAllViewsByFunctionIds(functionIds);
     }
 
+    public List<PositionView> findAllViewsByFunctionId(int userId, UserType userType, int functionId) {
+        if (userType != UserType.ADMIN) {
+            List<Integer> allowed = userService.getFunctionIds(userId);
+            if (!allowed.contains(functionId)) return List.of();
+        }
+        return positionRepository.findAllViewsByFunctionIds(List.of(functionId));
+    }
+
     public List<PositionView> findBudgetViews() {
         return positionRepository.findBudgetViews();
     }
