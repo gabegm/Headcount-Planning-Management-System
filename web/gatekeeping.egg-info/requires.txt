@@ -1,6 +1,0 @@
-flask
-pandas
-
-[test]
-pytest
-coverage
