@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>New Position</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">New Position</h1>
+        <a th:href="@{/positions}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <form method="post" th:action="@{/positions/create}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <input type="hidden" name="id" value="0"/>
+
+        <div class="row g-3">
+
+            <!-- Status & Recruitment -->
+            <div class="col-md-6">
+                <label for="statusId" class="form-label">Status <span class="text-danger">*</span></label>
+                <select class="form-select" id="statusId" name="statusId" required>
+                    <option value="">— Select —</option>
+                    <option th:each="s : ${positionStatuses}" th:value="${s.id}" th:text="${s.name}"></option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="recruitmentStatusId" class="form-label">Recruitment Status <span class="text-danger">*</span></label>
+                <select class="form-select" id="recruitmentStatusId" name="recruitmentStatusId" required>
+                    <option value="">— Select —</option>
+                    <option th:each="r : ${recruitmentStatuses}" th:value="${r.id}" th:text="${r.name}"></option>
+                </select>
+            </div>
+
+            <!-- Number & Title -->
+            <div class="col-md-6">
+                <label for="number" class="form-label">Number <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="number" name="number" required/>
+            </div>
+            <div class="col-md-6">
+                <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="title" name="title" required/>
+            </div>
+
+            <!-- Pillar & Company -->
+            <div class="col-md-6">
+                <label for="pillarId" class="form-label">Pillar <span class="text-danger">*</span></label>
+                <select class="form-select" id="pillarId" name="pillarId" required>
+                    <option value="">— Select —</option>
+                    <option th:each="p : ${pillars}" th:value="${p.id}" th:text="${p.name}"></option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="companyId" class="form-label">Company <span class="text-danger">*</span></label>
+                <select class="form-select" id="companyId" name="companyId" required>
+                    <option value="">— Select —</option>
+                    <option th:each="c : ${companies}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select>
+            </div>
+
+            <!-- Department & Function -->
+            <div class="col-md-6">
+                <label for="departmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                <select class="form-select" id="departmentId" name="departmentId" required>
+                    <option value="">— Select —</option>
+                    <option th:each="d : ${departments}" th:value="${d.id}" th:text="${d.name}"></option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="functionId" class="form-label">Function <span class="text-danger">*</span></label>
+                <select class="form-select" id="functionId" name="functionId" required>
+                    <option value="">— Select —</option>
+                    <option th:each="f : ${functions}" th:value="${f.id}" th:text="${f.name}"></option>
+                </select>
+            </div>
+
+            <!-- Reporting lines -->
+            <div class="col-md-6">
+                <label for="functionalReportingLine" class="form-label">Functional Reporting Line</label>
+                <input type="text" class="form-control" id="functionalReportingLine" name="functionalReportingLine"/>
+            </div>
+            <div class="col-md-6">
+                <label for="disciplinaryReportingLine" class="form-label">Disciplinary Reporting Line</label>
+                <input type="text" class="form-control" id="disciplinaryReportingLine" name="disciplinaryReportingLine"/>
+            </div>
+
+            <!-- Holder & Hours -->
+            <div class="col-md-6">
+                <label for="holder" class="form-label">Holder</label>
+                <input type="text" class="form-control" id="holder" name="holder"/>
+            </div>
+            <div class="col-md-6">
+                <label for="hours" class="form-label">Hours</label>
+                <input type="number" step="0.5" min="1" max="168" class="form-control" id="hours" name="hours"/>
+            </div>
+
+            <!-- Dates -->
+            <div class="col-md-6">
+                <label for="startDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate" name="startDate"/>
+            </div>
+            <div class="col-md-6">
+                <label for="endDate" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="endDate" name="endDate"/>
+            </div>
+
+            <!-- Financial fields -->
+            <div class="col-md-6">
+                <label for="salary" class="form-label">Salary</label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input type="number" step="0.01" min="0" class="form-control" id="salary" name="salary" value="0.00"/>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="socialSecurityContribution" class="form-label">Social Security Contribution</label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input type="number" step="0.01" min="0" class="form-control" id="socialSecurityContribution" name="socialSecurityContribution" value="0.00"/>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="fringeBenefit" class="form-label">Fringe Benefit</label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input type="number" step="0.01" min="0" class="form-control" id="fringeBenefit" name="fringeBenefit" value="0.00"/>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="performanceBonus" class="form-label">Performance Bonus</label>
+                <div class="input-group">
+                    <input type="number" step="0.01" min="0" class="form-control" id="performanceBonus" name="performanceBonus" value="0"/>
+                    <span class="input-group-text">%</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="superBonus" class="form-label">Super Bonus</label>
+                <div class="input-group">
+                    <input type="number" step="0.01" min="0" class="form-control" id="superBonus" name="superBonus" value="0"/>
+                    <span class="input-group-text">%</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="managementBonus" class="form-label">Management Bonus</label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input type="number" step="0.01" min="0" class="form-control" id="managementBonus" name="managementBonus" value="0.00"/>
+                </div>
+            </div>
+
+            <!-- Budget flag -->
+            <div class="col-12">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="isBudget" name="isBudget" value="true"/>
+                    <label class="form-check-label" for="isBudget">Is Budget Position</label>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="col-12 d-flex gap-2 justify-content-end mt-3">
+                <a th:href="@{/positions}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-1"></i> Create Position
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+</th:block>
+</body>
+</html>

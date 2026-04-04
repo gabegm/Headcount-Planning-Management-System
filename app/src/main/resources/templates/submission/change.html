@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/main}">
+<head>
+    <title layout:fragment="page-title">Submission Changes</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Submission Changes</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a th:href="@{/submissions}" class="btn btn-sm btn-outline-secondary me-2">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Submission details card -->
+    <div class="card mb-4" th:if="${submission != null}">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">
+                <i class="bi bi-file-earmark-text me-1"></i>
+                Submission #<span th:text="${submission.id}">—</span>
+            </span>
+            <span class="badge"
+                  th:classappend="${submission.statusId == 2} ? 'bg-success' : (${submission.statusId == 3} ? 'bg-danger' : 'bg-warning text-dark')"
+                  th:text="${submission.statusId == 2} ? 'Approved' : (${submission.statusId == 3} ? 'Rejected' : 'On Hold')">
+                On Hold
+            </span>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Position ID</dt>
+                <dd class="col-sm-9" th:text="${submission.positionId}">—</dd>
+
+                <dt class="col-sm-3">Reason</dt>
+                <dd class="col-sm-9" th:text="${submission.reasonId}">—</dd>
+
+                <dt class="col-sm-3">Effective Date</dt>
+                <dd class="col-sm-9" th:text="${#temporals.format(submission.effectiveDate, 'dd MMM yyyy')}">—</dd>
+
+                <dt class="col-sm-3">Submitted</dt>
+                <dd class="col-sm-9" th:text="${#temporals.format(submission.submitted, 'dd MMM yyyy HH:mm')}">—</dd>
+
+                <dt class="col-sm-3">Rationale</dt>
+                <dd class="col-sm-9" th:text="${submission.rationale}">—</dd>
+
+                <th:block th:if="${submission.comment != null and not #strings.isEmpty(submission.comment)}">
+                    <dt class="col-sm-3">Comment</dt>
+                    <dd class="col-sm-9" th:text="${submission.comment}">—</dd>
+                </th:block>
+            </dl>
+        </div>
+
+        <!-- Admin approve / reject actions -->
+        <div class="card-footer" sec:authorize="hasRole('ADMIN')">
+            <div class="d-flex gap-2">
+                <form th:action="@{/submissions/{id}/approve(id=${submission.id})}" method="post" class="d-inline">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-success btn-sm"
+                            onclick="return confirm('Approve this submission?')">
+                        <i class="bi bi-check-circle me-1"></i>Approve
+                    </button>
+                </form>
+                <form th:action="@{/submissions/{id}/reject(id=${submission.id})}" method="post" class="d-inline">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm"
+                               name="comment" placeholder="Rejection reason (optional)"/>
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Reject this submission?')">
+                            <i class="bi bi-x-circle me-1"></i>Reject
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- No submission found -->
+    <div th:if="${submission == null}" class="alert alert-warning" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+        Submission not found or you do not have permission to view it.
+    </div>
+
+    <!-- Changes table -->
+    <h5 class="mb-3">Change Log</h5>
+    <div class="table-responsive">
+        <table id="changesTable" class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Submitted</th>
+                    <th scope="col">Field</th>
+                    <th scope="col">Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${changes}">
+                    <td th:text="${#temporals.format(c.submitted, 'dd MMM yyyy HH:mm')}">—</td>
+                    <td>
+                        <!--/* Convert snake_case field name to Title Case for display */-->
+                        <span th:with="label=${#strings.replace(c.field, '_', ' ')}"
+                              th:text="${#strings.capitalize(label)}">Field</span>
+                    </td>
+                    <td th:text="${c.change}">—</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="scripts-extra">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new DataTable('#changesTable', Object.assign({}, window.defaultDataTableConfig, {
+                language: {
+                    emptyTable: 'No changes recorded for this submission.'
+                },
+                columnDefs: [{ orderable: false, targets: -1 }]
+            }));
+        });
+    </script>
+</th:block>
+</body>
+</html>

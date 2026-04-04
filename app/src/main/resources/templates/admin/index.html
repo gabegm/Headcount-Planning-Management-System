@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <h1 class="h2 pt-3 pb-2 mb-3 border-bottom">Dashboard</h1>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card text-bg-primary h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-person-badge fs-1"></i>
+                    <div>
+                        <div class="fs-4 fw-bold" th:text="${totalPositions ?: 0}">0</div>
+                        <div class="small">Total Positions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card text-bg-success h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-file-earmark-text fs-1"></i>
+                    <div>
+                        <div class="fs-4 fw-bold" th:text="${totalSubmissions ?: 0}">0</div>
+                        <div class="small">Total Submissions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card text-bg-warning h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-people fs-1"></i>
+                    <div>
+                        <div class="fs-4 fw-bold" th:text="${totalUsers ?: 0}">0</div>
+                        <div class="small">Total Users</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card text-bg-info h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-calendar-check fs-1"></i>
+                    <div>
+                        <div class="fs-4 fw-bold" th:text="${openGatekeepings ?: 0}">0</div>
+                        <div class="small">Open Cycles</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header fw-semibold">
+                    <i class="bi bi-clock-history me-1"></i> Recent Submissions
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Submitter</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="s : ${recentSubmissions}">
+                                    <td th:text="${#temporals.format(s.submitted, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${s.submitterEmail}"></td>
+                                    <td>
+                                        <span class="badge bg-primary" th:text="${s.statusName}"></span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(recentSubmissions)}">
+                                    <td colspan="3" class="text-center text-muted py-3">No recent submissions</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a th:href="@{/admin/submissions}" class="btn btn-sm btn-outline-primary">View all</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header fw-semibold">
+                    <i class="bi bi-calendar-check me-1"></i> Gatekeeping Cycles
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Deadline</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="g : ${recentGatekeepings}">
+                                    <td th:text="${#temporals.format(g.date, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#temporals.format(g.submissionDeadline, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${g.notes}"></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(recentGatekeepings)}">
+                                    <td colspan="3" class="text-center text-muted py-3">No cycles defined</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a th:href="@{/admin/gatekeeping}" class="btn btn-sm btn-outline-primary">View all</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,25 +1,40 @@
-version: '3.2'
 services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: gatekeeping
+      POSTGRES_USER: gatekeeping
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-gatekeeping}
+    ports:
+      - "5432:5432"
+    volumes:
+      - gatekeeping-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gatekeeping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   web:
     build:
-      context: ./web
-    command: "gunicorn --log-level=debug --certfile cert.pem --keyfile key.pem -w 4 -b 0.0.0.0:5000 gatekeeping:create_app()"
+      context: ./app
     ports:
-      - "5000:5000"
-      - "587:587"
-    volumes:
-      - type: volume
-        source: gatekeeping-data
-        target: /code
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: gatekeeping
+      DB_USER: gatekeeping
+      DB_PASSWORD: ${DB_PASSWORD:-gatekeeping}
+      MAIL_USERNAME: ${MAIL_USERNAME:-hrgatekeeping@gaucimaistre.com}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      SSL_ENABLED: ${SSL_ENABLED:-false}
+      SSL_KEYSTORE: ${SSL_KEYSTORE:-}
+      SSL_KEYSTORE_PASSWORD: ${SSL_KEYSTORE_PASSWORD:-}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+    depends_on:
+      db:
+        condition: service_healthy
 
-  schedule:
-    build:
-      context: ./web
-    command: "python gatekeeping/tasks.py"
-    image: gatekeeping_web:latest
-    volumes:
-      - type: bind
-        source: gatekeeping-data
-        target: /code
 volumes:
-  gatekeeping-data:
+  gatekeeping-db:

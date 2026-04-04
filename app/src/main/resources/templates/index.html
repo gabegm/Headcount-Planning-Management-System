@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Establishment</h1>
+        <div th:unless="${functions == null or #lists.isEmpty(functions)}">
+            <select id="functionSelect" class="form-select form-select-sm" style="min-width:200px;">
+                <option value="0">All Functions</option>
+                <option th:each="f : ${functions}"
+                        th:value="${f.id}"
+                        th:text="${f.name}">Function</option>
+            </select>
+        </div>
+    </div>
+
+    <div th:if="${functions == null or #lists.isEmpty(functions)}"
+         class="alert alert-info" role="alert">
+        <i class="bi bi-info-circle me-1"></i>
+        You are not assigned to any functions yet.
+    </div>
+
+    <div th:unless="${functions == null or #lists.isEmpty(functions)}">
+        <div id="no-data-alert" class="alert alert-info d-none" role="alert">
+            <i class="bi bi-info-circle me-1"></i>
+            No position data with start dates found. Charts will appear once positions have been configured with start dates.
+        </div>
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header fw-semibold">
+                        <i class="bi bi-people me-1"></i> FTE &mdash; Budget vs Actual
+                    </div>
+                    <div class="card-body p-2">
+                        <div id="fteChart" style="height:320px;">
+                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                <div class="spinner-border spinner-border-sm me-2" role="status"></div> Loading&hellip;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header fw-semibold">
+                        <i class="bi bi-currency-euro me-1"></i> Cost &mdash; Budget vs Actual
+                    </div>
+                    <div class="card-body p-2">
+                        <div id="costChart" style="height:320px;">
+                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                <div class="spinner-border spinner-border-sm me-2" role="status"></div> Loading&hellip;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+<th:block layout:fragment="scripts-extra">
+    <script th:inline="javascript">
+        (function () {
+            if (typeof Plotly === 'undefined') {
+                ['fteChart', 'costChart'].forEach(function (id) {
+                    var el = document.getElementById(id);
+                    if (el) el.innerHTML = '<p class="text-danger text-center mt-4"><i class="bi bi-exclamation-triangle me-1"></i>Chart library failed to load. Please refresh the page.</p>';
+                });
+                return;
+            }
+
+            var select = document.getElementById('functionSelect');
+            if (!select) return;
+
+            function showNoData() {
+                document.getElementById('no-data-alert').classList.remove('d-none');
+                document.getElementById('fteChart').innerHTML  = '';
+                document.getElementById('costChart').innerHTML = '';
+            }
+
+            function toTraces(budget, actual, label) {
+                var traces = [];
+                var bEntries = Object.entries(budget || {});
+                var aEntries = Object.entries(actual || {});
+                if (bEntries.length) {
+                    traces.push({
+                        x: bEntries.map(function(e){return e[0];}),
+                        y: bEntries.map(function(e){return e[1];}),
+                        mode: 'lines+markers', name: 'Budget ' + label,
+                        line: { color: '#0d6efd', width: 2 }, marker: { size: 6 }
+                    });
+                }
+                if (aEntries.length) {
+                    traces.push({
+                        x: aEntries.map(function(e){return e[0];}),
+                        y: aEntries.map(function(e){return e[1];}),
+                        mode: 'lines+markers', name: 'Actual ' + label,
+                        line: { color: '#198754', width: 2, dash: 'dot' }, marker: { size: 6 }
+                    });
+                }
+                return traces;
+            }
+
+            var commonLayout = {
+                margin: { t: 20, l: 60, r: 20, b: 60 },
+                legend: { orientation: 'h', y: -0.3 },
+                plot_bgcolor: 'transparent', paper_bgcolor: 'transparent',
+                font: { family: 'inherit', size: 12 },
+                xaxis: { type: 'date', tickformat: '%b %Y' }
+            };
+            var commonConfig = { responsive: true, displayModeBar: false };
+
+            function renderCharts(functionId) {
+                ['fteChart', 'costChart'].forEach(function (id) {
+                    document.getElementById(id).innerHTML =
+                        '<div class="d-flex align-items-center justify-content-center h-100 text-muted">' +
+                        '<div class="spinner-border spinner-border-sm me-2" role="status"></div> Loading\u2026</div>';
+                });
+                document.getElementById('no-data-alert').classList.add('d-none');
+
+                fetch('/dashboard/render/' + functionId)
+                    .then(function(resp) { return resp.ok ? resp.json() : Promise.reject(); })
+                    .then(function(data) {
+                        var fteTraces  = toTraces(data.budgetFte,  data.actualFte,  'FTE');
+                        var costTraces = toTraces(data.budgetCost, data.actualCost, 'Cost');
+
+                        if (!fteTraces.length && !costTraces.length) { showNoData(); return; }
+
+                        if (fteTraces.length) {
+                            document.getElementById('fteChart').innerHTML = '';
+                            Plotly.newPlot('fteChart',  fteTraces,  Object.assign({}, commonLayout, { yaxis: { title: 'FTE' } }),  commonConfig);
+                        } else {
+                            document.getElementById('fteChart').innerHTML = '<p class="text-muted text-center mt-4">No FTE data available.</p>';
+                        }
+                        if (costTraces.length) {
+                            document.getElementById('costChart').innerHTML = '';
+                            Plotly.newPlot('costChart', costTraces, Object.assign({}, commonLayout, { yaxis: { title: 'Cost (\u20ac)' } }), commonConfig);
+                        } else {
+                            document.getElementById('costChart').innerHTML = '<p class="text-muted text-center mt-4">No cost data available.</p>';
+                        }
+                    })
+                    .catch(showNoData);
+            }
+
+            select.addEventListener('change', function () {
+                renderCharts(this.value);
+            });
+
+            renderCharts(select.value);
+        })();
+    </script>
+</th:block>
+</body>
+</html>
