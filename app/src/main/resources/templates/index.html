@@ -134,11 +134,13 @@
                         if (!fteTraces.length && !costTraces.length) { showNoData(); return; }
 
                         if (fteTraces.length) {
+                            document.getElementById('fteChart').innerHTML = '';
                             Plotly.newPlot('fteChart',  fteTraces,  Object.assign({}, commonLayout, { yaxis: { title: 'FTE' } }),  commonConfig);
                         } else {
                             document.getElementById('fteChart').innerHTML = '<p class="text-muted text-center mt-4">No FTE data available.</p>';
                         }
                         if (costTraces.length) {
+                            document.getElementById('costChart').innerHTML = '';
                             Plotly.newPlot('costChart', costTraces, Object.assign({}, commonLayout, { yaxis: { title: 'Cost (\u20ac)' } }), commonConfig);
                         } else {
                             document.getElementById('costChart').innerHTML = '<p class="text-muted text-center mt-4">No cost data available.</p>';

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,12 @@ public class DashboardService {
                     .toList();
         }
 
+        // Sort by startDate so map keys are inserted in chronological order
+        positions = positions.stream()
+                .filter(p -> p.startDate() != null)
+                .sorted(Comparator.comparing(Position::startDate))
+                .toList();
+
         Map<String, Double> budgetFte = new LinkedHashMap<>();
         Map<String, Double> actualFte = new LinkedHashMap<>();
         Map<String, Double> budgetCost = new LinkedHashMap<>();
@@ -36,9 +43,6 @@ public class DashboardService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy");
 
         for (Position p : positions) {
-            if (p.startDate() == null) {
-                continue;
-            }
             String monthKey = p.startDate().format(formatter);
             double fte = p.hours() != null ? p.hours() / 40.0 : 0.0;
             double cost = BigDecimal.ZERO
