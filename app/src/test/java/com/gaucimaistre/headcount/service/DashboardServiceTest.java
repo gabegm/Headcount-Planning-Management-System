@@ -56,9 +56,9 @@ class DashboardServiceTest {
 
         DashboardData result = dashboardService.getChartData(1, UserType.ADMIN, null);
 
-        assertThat(result.actualFte()).containsKey("Jan 2026");
-        assertThat(result.budgetFte()).containsKey("Jan 2026");
-        assertThat(result.actualFte()).doesNotContainKey("Feb 2026");
+        assertThat(result.actualFte()).containsKey("2026-01-01");
+        assertThat(result.budgetFte()).containsKey("2026-01-01");
+        assertThat(result.actualFte()).doesNotContainKey("2026-02-01");
     }
 
     @Test
@@ -69,7 +69,7 @@ class DashboardServiceTest {
 
         DashboardData result = dashboardService.getChartData(1, UserType.ADMIN, null);
 
-        assertThat(result.actualFte().get("Mar 2026")).isEqualTo(1.0);
+        assertThat(result.actualFte().get("2026-03-01")).isEqualTo(1.0);
     }
 
     @Test
@@ -80,7 +80,7 @@ class DashboardServiceTest {
 
         DashboardData result = dashboardService.getChartData(1, UserType.ADMIN, null);
 
-        assertThat(result.actualFte().get("Mar 2026")).isEqualTo(0.5);
+        assertThat(result.actualFte().get("2026-03-01")).isEqualTo(0.5);
     }
 
     @Test
@@ -94,7 +94,7 @@ class DashboardServiceTest {
 
         DashboardData result = dashboardService.getChartData(1, UserType.ADMIN, null);
 
-        assertThat(result.actualCost().get("Apr 2026")).isEqualTo(68000.0);
+        assertThat(result.actualCost().get("2026-04-01")).isEqualTo(68000.0);
     }
 
     @Test
@@ -106,8 +106,8 @@ class DashboardServiceTest {
 
         DashboardData result = dashboardService.getChartData(1, UserType.ADMIN, null);
 
-        assertThat(result.actualFte().get("May 2026")).isEqualTo(2.0);
-        assertThat(result.actualCost().get("May 2026")).isEqualTo(90000.0);
+        assertThat(result.actualFte().get("2026-05-01")).isEqualTo(2.0);
+        assertThat(result.actualCost().get("2026-05-01")).isEqualTo(90000.0);
     }
 
     @Test
@@ -119,7 +119,7 @@ class DashboardServiceTest {
 
         DashboardData result = dashboardService.getChartData(1, UserType.ADMIN, 1);
 
-        assertThat(result.actualFte().get("Jun 2026")).isEqualTo(1.0);
+        assertThat(result.actualFte().get("2026-06-01")).isEqualTo(1.0);
     }
 
     private Position buildPosition(String number, boolean isBudget, LocalDate startDate,

@@ -40,10 +40,10 @@ public class DashboardService {
         Map<String, Double> budgetCost = new LinkedHashMap<>();
         Map<String, Double> actualCost = new LinkedHashMap<>();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-01");
 
         for (Position p : positions) {
-            String monthKey = p.startDate().format(formatter);
+            String monthKey = p.startDate().withDayOfMonth(1).format(formatter);
             double fte = p.hours() != null ? p.hours() / 40.0 : 0.0;
             double cost = BigDecimal.ZERO
                     .add(p.salary() != null ? p.salary() : BigDecimal.ZERO)
