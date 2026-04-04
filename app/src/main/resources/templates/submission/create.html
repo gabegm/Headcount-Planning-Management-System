@@ -34,13 +34,24 @@
         positionId: '',
         positionData: null,
         loadingPosition: false,
+        _fetchTimer: null,
+        init() {
+            this.$watch('positionId', (val) => {
+                clearTimeout(this._fetchTimer);
+                if (val.trim().length >= 6) {
+                    this._fetchTimer = setTimeout(() => this.fetchPosition(), 600);
+                } else {
+                    this.positionData = null;
+                }
+            });
+        },
         showPositionTitle()           { return ['Backfill', 'Job Title Change'].includes(this.reason); },
         showReportingLines()          { return this.reason === 'Reporting Line Change'; },
         showPositionHours()           { return ['Backfill', 'Working Hours Change'].includes(this.reason); },
         showSalaryFields()            { return ['Backfill', 'Salary Change'].includes(this.reason); },
-        showAnyChangeFields()         { return this.reason !== '' &&
-                                               this.reason !== 'New Approved Position' &&
-                                               this.reason !== 'New Unapproved Position' &&
+        showAnyChangeFields()         { return this.reason !== '' &amp;&amp;
+                                               this.reason !== 'New Approved Position' &amp;&amp;
+                                               this.reason !== 'New Unapproved Position' &amp;&amp;
                                                this.reason !== 'Deactivate Position'; },
         async fetchPosition() {
             const id = this.positionId.trim();
@@ -67,8 +78,7 @@
                     <label for="positionId" class="form-label">Position ID <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="positionId" name="positionId"
                            placeholder="e.g. ABC001" required
-                           x-model="positionId"
-                           @input.debounce.600ms="fetchPosition()"/>
+                           x-model="positionId"/>
                     <div class="invalid-feedback">Position ID is required.</div>
                     <div class="form-text">Enter a valid position number to preview it on the right.</div>
                 </div>
