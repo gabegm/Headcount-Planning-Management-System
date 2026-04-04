@@ -22,7 +22,7 @@ public class FaqService {
     }
 
     public Optional<Page> findById(int id) {
-        return Optional.empty();
+        return pageRepository.findById(id);
     }
 
     public void save(Page page) {

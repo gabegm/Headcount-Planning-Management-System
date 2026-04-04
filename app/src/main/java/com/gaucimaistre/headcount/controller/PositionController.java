@@ -7,6 +7,7 @@ import com.gaucimaistre.headcount.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,12 +45,14 @@ public class PositionController {
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String createForm(Model model) {
         populateFormLookups(model);
         return "position/create";
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String create(@ModelAttribute Position position, RedirectAttributes redirectAttributes) {
         try {
             positionService.save(position);
@@ -100,6 +103,7 @@ public class PositionController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String editForm(@PathVariable int id, Model model) {
         positionService.findById(id).ifPresent(p -> model.addAttribute("position", p));
         populateFormLookups(model);
@@ -107,6 +111,7 @@ public class PositionController {
     }
 
     @PostMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String update(@PathVariable int id,
                          @ModelAttribute Position position,
                          RedirectAttributes redirectAttributes) {
@@ -121,6 +126,7 @@ public class PositionController {
     }
 
     @PostMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String delete(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             positionService.delete(id);

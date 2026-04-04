@@ -12,6 +12,7 @@ import com.gaucimaistre.headcount.repository.SubmissionStatusRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -53,6 +54,7 @@ public class SubmissionService {
         return submissionRepository.findById(id);
     }
 
+    @Transactional
     public int create(Submission submission, List<SubmissionChange> changes) {
         int submissionId = submissionRepository.save(submission);
         if (changes != null) {

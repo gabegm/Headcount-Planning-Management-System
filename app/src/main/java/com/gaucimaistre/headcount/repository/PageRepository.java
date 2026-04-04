@@ -37,6 +37,12 @@ public class PageRepository {
                 .stream().findFirst();
     }
 
+    public Optional<Page> findById(int id) {
+        String sql = SELECT_ALL_COLUMNS + "WHERE id = :id";
+        return jdbc.query(sql, new MapSqlParameterSource("id", id), rowMapper)
+                .stream().findFirst();
+    }
+
     public int save(Page page) {
         log.debug("Saving {}: {}", "page", page.title());
         String sql = """

@@ -71,7 +71,7 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("successMessage", "User created successfully.");
         } catch (Exception e) {
             log.error("Failed to create user", e);
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create user: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create user.");
         }
         return "redirect:/admin/users";
     }

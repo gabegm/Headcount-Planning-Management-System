@@ -52,10 +52,11 @@ public class UserRepository {
                 SELECT id, email, password, password_reset_token, type, active
                 FROM "user"
                 WHERE password_reset_token = :token
+                  AND password_reset_token_expires_at > now()
                 """;
         Optional<User> result = jdbc.query(sql, new MapSqlParameterSource("token", token), rowMapper)
                 .stream().findFirst();
-        if (result.isEmpty()) log.debug("User not found with password-reset-token");
+        if (result.isEmpty()) log.debug("User not found with password-reset-token (or token expired)");
         return result;
     }
 
@@ -146,7 +147,10 @@ public class UserRepository {
     public void setPasswordResetToken(int id, String token) {
         log.debug("Setting password-reset-token for user id={}", id);
         String sql = """
-                UPDATE "user" SET password_reset_token = :token WHERE id = :id
+                UPDATE "user"
+                SET password_reset_token = :token,
+                    password_reset_token_expires_at = now() + interval '1 hour'
+                WHERE id = :id
                 """;
         jdbc.update(sql, new MapSqlParameterSource("id", id).addValue("token", token));
     }

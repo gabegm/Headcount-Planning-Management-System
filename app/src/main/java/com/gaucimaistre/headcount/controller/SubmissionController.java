@@ -2,6 +2,7 @@ package com.gaucimaistre.headcount.controller;
 
 import com.gaucimaistre.headcount.model.Submission;
 import com.gaucimaistre.headcount.model.SubmissionChange;
+import com.gaucimaistre.headcount.model.enums.UserType;
 import com.gaucimaistre.headcount.security.AppUserDetails;
 import com.gaucimaistre.headcount.service.*;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,11 @@ public class SubmissionController {
             @RequestParam(required = false) String startDateField,
             @AuthenticationPrincipal AppUserDetails principal,
             RedirectAttributes redirectAttributes) {
+        if (gatekeepingId == 0) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Please select a gatekeeping cycle before submitting.");
+            return "redirect:/submissions/create";
+        }
         try {
             OffsetDateTime now = OffsetDateTime.now();
             Submission submission = new Submission(
@@ -98,8 +104,24 @@ public class SubmissionController {
     }
 
     @GetMapping("/{id}/change")
-    public String changes(@PathVariable int id, Model model) {
-        submissionService.findById(id).ifPresent(s -> model.addAttribute("submission", s));
+    public String changes(@PathVariable int id,
+                          @AuthenticationPrincipal AppUserDetails principal,
+                          Model model,
+                          RedirectAttributes redirectAttributes) {
+        var maybeSubmission = submissionService.findById(id);
+        if (maybeSubmission.isEmpty()) {
+            return "redirect:/submissions";
+        }
+        Submission submission = maybeSubmission.get();
+        boolean isAdmin = principal.getUserType() == UserType.ADMIN;
+        if (!isAdmin && submission.submitterId() != principal.getUserId()) {
+            log.warn("User {} attempted to view submission {} owned by {}",
+                    principal.getUserId(), id, submission.submitterId());
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "You do not have permission to view that submission.");
+            return "redirect:/submissions";
+        }
+        model.addAttribute("submission", submission);
         model.addAttribute("changes", submissionService.getChangesBySubmissionId(id));
         return "submission/change";
     }

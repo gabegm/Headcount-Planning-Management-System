@@ -69,8 +69,8 @@ public class PageService {
             CleanResults cr = antiSamy.scan(body, policy);
             return cr.getCleanHTML();
         } catch (Exception e) {
-            log.error("PageService: AntiSamy scan failed, returning original body", e);
-            return body;
+            log.error("PageService: AntiSamy scan failed, rejecting input to prevent XSS", e);
+            return "";
         }
     }
 }
