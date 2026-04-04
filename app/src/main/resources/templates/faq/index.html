@@ -21,12 +21,16 @@
 
     <div class="container">
         <div class="py-4">
-            <!--
-                page.body contains pre-rendered HTML with Bootstrap 5 accordion markup,
-                stored and sanitized server-side by PageService / the admin editor.
-            -->
-            <div th:utext="${page.body}">
-                <!-- FAQ accordion content rendered here -->
+            <div th:if="${#lists.isEmpty(faqs)}" class="text-center text-muted py-5">
+                <i class="bi bi-question-circle fs-1 d-block mb-3"></i>
+                <p>No FAQ content has been added yet.</p>
+                <a th:href="@{/admin/faq}" sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-primary">
+                    Add FAQ content
+                </a>
+            </div>
+            <div th:each="faq : ${faqs}" class="mb-5">
+                <h3 class="mb-3" th:text="${faq.title}"></h3>
+                <div th:utext="${faq.body}"></div>
             </div>
         </div>
     </div>
