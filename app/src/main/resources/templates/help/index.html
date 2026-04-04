@@ -21,8 +21,13 @@
 
     <div class="container">
         <div class="py-4">
-            <div th:utext="${page.body}">
-                <!-- pre-rendered, sanitized HTML from PageService -->
+            <div th:if="${page != null}" th:utext="${page.body}"></div>
+            <div th:if="${page == null}" class="text-center text-muted py-5">
+                <i class="bi bi-question-circle fs-1 d-block mb-3"></i>
+                <p>No help content has been added yet.</p>
+                <a th:href="@{/admin/help}" sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-primary">
+                    Add help content
+                </a>
             </div>
         </div>
     </div>

@@ -12,36 +12,41 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class HomeControllerTest extends AbstractIntegrationTest {
+class SubmissionControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String ADMIN_EMAIL = "admin@example.com";
-
-    /** Builds an AppUserDetails backed by the real admin user from seed data. */
     private AppUserDetails adminUserDetails() {
-        User adminUser = new User(1, ADMIN_EMAIL, "hash", null, UserType.ADMIN, true);
+        User adminUser = new User(1, "admin@example.com", "hash", null, UserType.ADMIN, true);
         return new AppUserDetails(adminUser);
     }
 
     @Test
-    void home_whenUnauthenticated_redirectsToLogin() throws Exception {
-        mockMvc.perform(get("/"))
+    void submissions_whenUnauthenticated_redirectsToLogin() throws Exception {
+        mockMvc.perform(get("/submissions"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**/auth/login"));
     }
 
     @Test
-    void home_whenAuthenticated_returnsOk() throws Exception {
-        mockMvc.perform(get("/")
+    void submissions_whenAuthenticated_returnsOk() throws Exception {
+        mockMvc.perform(get("/submissions")
                         .with(user(adminUserDetails())))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"));
     }
 
     @Test
-    void home_containsFunctionLinks() throws Exception {
-        mockMvc.perform(get("/")
+    void submissionsCreate_whenUnauthenticated_redirectsToLogin() throws Exception {
+        mockMvc.perform(get("/submissions/create"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/auth/login"));
+    }
+
+    @Test
+    void submissionsCreate_whenAuthenticated_returnsOk() throws Exception {
+        mockMvc.perform(get("/submissions/create")
                         .with(user(adminUserDetails())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"));

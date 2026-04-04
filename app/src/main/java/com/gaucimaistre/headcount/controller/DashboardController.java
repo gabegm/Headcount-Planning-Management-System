@@ -1,9 +1,11 @@
 package com.gaucimaistre.headcount.controller;
 
+import com.gaucimaistre.headcount.security.AppUserDetails;
 import com.gaucimaistre.headcount.service.DashboardService;
 import com.gaucimaistre.headcount.service.FunctionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +23,26 @@ public class DashboardController {
     private final FunctionService functionService;
 
     @GetMapping("/dashboard/{functionId}")
-    public String dashboard(@PathVariable int functionId, Model model) {
+    public String dashboard(@PathVariable int functionId,
+                            @AuthenticationPrincipal AppUserDetails principal,
+                            Model model) {
         functionService.findById(functionId).ifPresent(f -> model.addAttribute("function", f));
-        model.addAttribute("chartData", dashboardService.getChartData(functionId));
+        model.addAttribute("chartData",
+                dashboardService.getChartData(principal.getUserId(), principal.getUserType(), functionId));
         return "index";
     }
 
     @GetMapping("/dashboard/render/{functionId}")
     @ResponseBody
-    public Map<String, Object> renderChart(@PathVariable int functionId) {
+    public Map<String, Object> renderChart(@PathVariable int functionId,
+                                           @AuthenticationPrincipal AppUserDetails principal) {
         log.debug("Rendering chart data for function {}", functionId);
-        return dashboardService.getChartData(functionId);
+        var data = dashboardService.getChartData(principal.getUserId(), principal.getUserType(), functionId);
+        return Map.of(
+                "budgetFte", data.budgetFte(),
+                "actualFte", data.actualFte(),
+                "budgetCost", data.budgetCost(),
+                "actualCost", data.actualCost()
+        );
     }
 }
