@@ -31,7 +31,7 @@
                 <tr th:each="user : ${users}">
                     <td th:text="${user.email}"></td>
                     <td>
-                        <span class="badge bg-primary" th:text="${user.role}"></span>
+                        <span class="badge bg-primary" th:text="${user.type}"></span>
                     </td>
                     <td>
                         <span th:if="${user.active}" class="badge bg-success">Yes</span>
@@ -125,7 +125,7 @@
 </th:block>
 
 <div th:fragment="editForm">
-    <form method="post" th:action="@{/admin/users/{id}/update(id=${user.id})}">
+    <form th:if="${user != null}" method="post" th:action="@{/admin/users/{id}/update(id=${user.id})}">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="mb-3">
             <label for="editEmail" class="form-label">Email</label>

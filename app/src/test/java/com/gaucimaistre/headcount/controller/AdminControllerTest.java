@@ -14,7 +14,7 @@ class AdminControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String ADMIN_EMAIL = "gabriel.gaucimaistre@gaucimaistre.com";
+    private static final String ADMIN_EMAIL = "admin@example.com";
 
     @Test
     void adminDashboard_whenUnauthenticated_redirectsToLogin() throws Exception {
@@ -41,14 +41,14 @@ class AdminControllerTest extends AbstractIntegrationTest {
 
     @Test
     void adminUsers_returnsOk_forAdmin() throws Exception {
-        mockMvc.perform(get("/admin/user")
+        mockMvc.perform(get("/admin/users")
                         .with(user(ADMIN_EMAIL).roles("ADMIN", "USER")))
                 .andExpect(status().isOk());
     }
 
     @Test
     void adminPositions_returnsOk_forAdmin() throws Exception {
-        mockMvc.perform(get("/admin/position")
+        mockMvc.perform(get("/admin/positions")
                         .with(user(ADMIN_EMAIL).roles("ADMIN", "USER")))
                 .andExpect(status().isOk());
     }

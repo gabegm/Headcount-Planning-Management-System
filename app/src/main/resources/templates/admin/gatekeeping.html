@@ -125,7 +125,7 @@
 </th:block>
 
 <div th:fragment="editForm">
-    <form method="post" th:action="@{/admin/gatekeeping/{id}/update(id=${gatekeeping.id})}">
+    <form th:if="${gatekeeping != null}" method="post" th:action="@{/admin/gatekeeping/{id}/update(id=${gatekeeping.id})}">/
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="mb-3">
             <label for="editDate" class="form-label">Date</label>

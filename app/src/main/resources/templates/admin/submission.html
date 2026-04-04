@@ -97,7 +97,7 @@
 </th:block>
 
 <div th:fragment="editForm">
-    <form method="post" th:action="@{/admin/submissions/{id}/update(id=${submission.id})}">
+    <form th:if="${submission != null}" method="post" th:action="@{/admin/submissions/{id}/update(id=${submission.id})}">/
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="mb-3">
             <label for="editStatusId" class="form-label">Status</label>

@@ -288,7 +288,7 @@
 </th:block>
 
 <div th:fragment="editForm">
-    <form method="post" th:action="@{/admin/positions/{id}/update(id=${position.id})}">
+    <form th:if="${position != null}" method="post" th:action="@{/admin/positions/{id}/update(id=${position.id})}">/
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <!-- preserve non-editable fields -->
         <input type="hidden" name="recruitmentStatusId" th:value="${position.recruitmentStatusId}"/>

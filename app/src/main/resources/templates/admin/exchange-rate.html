@@ -113,7 +113,7 @@
 </th:block>
 
 <div th:fragment="editForm">
-    <form method="post" th:action="@{/admin/exchange-rates/{id}/update(id=${exchangeRate.id})}">
+    <form th:if="${exchangeRate != null}" method="post" th:action="@{/admin/exchange-rates/{id}/update(id=${exchangeRate.id})}">/
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="mb-3">
             <label for="editName" class="form-label">Name</label>

@@ -23,7 +23,7 @@ class UserRepositoryTest extends AbstractIntegrationTest {
     @Autowired
     private NamedParameterJdbcTemplate jdbc;
 
-    private static final String ADMIN_EMAIL = "gabriel.gaucimaistre@gaucimaistre.com";
+    private static final String ADMIN_EMAIL = "admin@example.com";
 
     @Test
     void findByEmail_returnsAdminUser() {
