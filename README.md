@@ -62,12 +62,13 @@ Open <http://localhost:8080> in a browser.
 > **Note:** On the first run Docker will pull images and build the JAR —
 > this takes a few minutes. Subsequent starts are much faster.
 
-Default admin credentials (change after first login):
+Default demo credentials (change after first login):
 
-| Field    | Value                                   |
-|----------|-----------------------------------------|
-| Email    | `gabriel.gaucimaistre@gaucimaistre.com` |
-| Password | `changeme`                              |
+| Email | Password | Role |
+|-------|----------|------|
+| `admin@example.com` | `changeme` | Admin — full access |
+| `manager@example.com` | `changeme` | User — Engineering functions |
+| `employee@example.com` | `changeme` | User — Backend, Frontend, Data |
 
 ---
 
@@ -95,8 +96,12 @@ docker compose ps db   # Status should show "healthy"
 
 ```bash
 cd app
-./gradlew bootRun
+./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
+
+The `dev` profile activates the seed migration (`db/seed/`) so demo positions,
+users, and submissions are loaded automatically. Without it only the schema
+migration runs (appropriate for production).
 
 The application connects to `localhost:5432` with the default credentials
 (`gatekeeping` / `gatekeeping`) which match the Docker Compose database service.
@@ -167,16 +172,49 @@ app/
 │   ├── security/        # UserDetails + UserDetailsService
 │   └── service/         # Business logic layer
 ├── src/main/resources/
-│   ├── db/migration/    # Flyway V1 (schema) + V2 (seed data)
+│   ├── db/
+│   │   ├── migration/   # Flyway V1 — schema only (runs on ALL environments)
+│   │   └── seed/        # Flyway V2 — demo data (dev profile + tests only)
 │   ├── templates/       # Thymeleaf templates
 │   │   ├── layout/      # Base layouts (main, admin, auth)
 │   │   ├── admin/       # 17 admin pages
 │   │   ├── auth/        # Login, register, password reset
+│   │   ├── dashboard/   # Analytics charts (Plotly.js)
 │   │   ├── position/    # Position list + detail
 │   │   └── submission/  # Submission list, create, change
 │   └── static/          # CSS, images
 └── src/test/            # Integration + unit tests
 ```
+
+---
+
+## Seed Data & Profiles
+
+Flyway migrations are split into two directories with different lifecycles:
+
+| Directory | Profile | Purpose |
+|-----------|---------|---------|
+| `db/migration/` | Always | Schema DDL — safe to run in production |
+| `db/seed/` | `dev` only | Demo positions, users, and submissions |
+
+The `dev` profile is enabled by default in `docker-compose.yml`
+(`SPRING_PROFILES_ACTIVE=dev`). To suppress seed loading (e.g., in a staging
+or production deployment), override the variable:
+
+```bash
+SPRING_PROFILES_ACTIVE= docker compose up
+```
+
+### Demo data included
+
+- **27 positions** across Backend, Frontend, Mobile, and Data Engineering
+  functions — all with `start_date`, `salary`, and `hours` populated so the
+  dashboard charts render immediately.
+- **14 budget plan lines** (`is_budget=TRUE`) paired against 13 actual
+  positions, giving the FTE and Cost charts both a Budget and Actual series.
+- **5 gatekeeping cycles** (Q4 2025 through Q4 2026).
+- **4 sample submissions** in different statuses (approved, rejected, on-hold)
+  with associated change records.
 
 ---
 
