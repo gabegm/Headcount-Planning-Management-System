@@ -22,14 +22,12 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Pillar</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="dept : ${departments}">
                     <td th:text="${dept.name}"></td>
-                    <td th:text="${dept.pillar?.name}"></td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary me-1"
                                 th:attr="hx-get=@{/admin/departments/{id}/edit-form(id=${dept.id})}"

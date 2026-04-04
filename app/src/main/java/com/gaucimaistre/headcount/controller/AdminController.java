@@ -130,6 +130,9 @@ public class AdminController {
     public String companies(Model model) {
         model.addAttribute("companies", companyService.findAll());
         model.addAttribute("exchangeRates", exchangeRateService.findAll());
+        var erMap = new java.util.HashMap<Integer, String>();
+        exchangeRateService.findAll().forEach(er -> erMap.put(er.id(), er.code() + " — " + er.name()));
+        model.addAttribute("exchangeRateMap", erMap);
         return "admin/company";
     }
 
@@ -239,6 +242,7 @@ public class AdminController {
     @GetMapping("/departments")
     public String departments(Model model) {
         model.addAttribute("departments", departmentService.findAll());
+        model.addAttribute("pillars", pillarService.findAll());
         return "admin/department";
     }
 
@@ -560,7 +564,7 @@ public class AdminController {
 
     @GetMapping("/submissions")
     public String submissions(Model model) {
-        model.addAttribute("submissions", adminSubmissionService.findAll());
+        model.addAttribute("submissions", adminSubmissionService.findAllViews());
         return "admin/submission";
     }
 

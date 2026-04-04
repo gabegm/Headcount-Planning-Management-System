@@ -33,7 +33,7 @@
             <tbody>
                 <tr th:each="sub : ${submissions}">
                     <td th:text="${sub.submitted}"></td>
-                    <td th:text="${sub.submitter}"></td>
+                    <td th:text="${sub.submitterEmail}"></td>
                     <td>
                         <a th:href="@{/admin/positions/{id}(id=${sub.positionId})}"
                            th:text="${sub.positionId}"></a>
@@ -41,7 +41,7 @@
                     <td th:text="${sub.effectiveDate}"></td>
                     <td th:text="${sub.gatekeepingDate}"></td>
                     <td>
-                        <span class="badge bg-primary" th:text="${sub.status}"></span>
+                        <span class="badge bg-primary" th:text="${sub.statusName}"></span>
                     </td>
                     <td th:text="${sub.reason}"></td>
                     <td th:text="${sub.rationale}"></td>

@@ -34,8 +34,8 @@
                     <td th:text="${gk.submissionDeadline}"></td>
                     <td th:text="${gk.notes}"></td>
                     <td>
-                        <span th:if="${gk.open}" class="badge bg-success">Open</span>
-                        <span th:unless="${gk.open}" class="badge bg-danger">Closed</span>
+                        <span th:if="${gk.submissionDeadline != null and not gk.submissionDeadline.isBefore(#temporals.createToday())}" class="badge bg-success">Open</span>
+                        <span th:unless="${gk.submissionDeadline != null and not gk.submissionDeadline.isBefore(#temporals.createToday())}" class="badge bg-danger">Closed</span>
                     </td>
                     <td class="text-nowrap">
                         <button class="btn btn-sm btn-outline-primary me-1"
@@ -47,7 +47,7 @@
                         <form method="post"
                               th:action="@{/admin/gatekeeping/{id}/close(id=${gk.id})}"
                               class="d-inline"
-                              th:if="${gk.open}">
+                              th:if="${gk.submissionDeadline != null and not gk.submissionDeadline.isBefore(#temporals.createToday())}">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                             <button type="submit" class="btn btn-sm btn-outline-warning me-1"
                                     title="Close cycle">

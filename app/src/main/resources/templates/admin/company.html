@@ -29,7 +29,7 @@
             <tbody>
                 <tr th:each="company : ${companies}">
                     <td th:text="${company.name}"></td>
-                    <td th:text="${company.currency}"></td>
+                    <td th:text="${exchangeRateMap[company.exchangeRateId]}"></td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary me-1"
                                 th:attr="hx-get=@{/admin/companies/{id}/edit-form(id=${company.id})}"
@@ -68,9 +68,13 @@
                             <input type="text" class="form-control" id="name" name="name" required/>
                         </div>
                         <div class="mb-3">
-                            <label for="currency" class="form-label">Currency</label>
-                            <input type="text" class="form-control" id="currency" name="currency"
-                                   placeholder="e.g. EUR" maxlength="3" required/>
+                            <label for="exchangeRateId" class="form-label">Exchange Rate</label>
+                            <select class="form-select" id="exchangeRateId" name="exchangeRateId" required>
+                                <option value="">— Select —</option>
+                                <option th:each="er : ${exchangeRates}"
+                                        th:value="${er.id}"
+                                        th:text="${er.code + ' — ' + er.name}"></option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
