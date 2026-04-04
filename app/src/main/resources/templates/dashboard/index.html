@@ -59,6 +59,14 @@
 <th:block layout:fragment="scripts-extra">
     <script th:inline="javascript">
         (async function () {
+            if (typeof Plotly === 'undefined') {
+                document.getElementById('fteChart').innerHTML  =
+                    '<p class="text-danger text-center mt-4"><i class="bi bi-exclamation-triangle me-1"></i>Chart library failed to load. Please refresh the page.</p>';
+                document.getElementById('costChart').innerHTML =
+                    '<p class="text-danger text-center mt-4"><i class="bi bi-exclamation-triangle me-1"></i>Chart library failed to load. Please refresh the page.</p>';
+                return;
+            }
+
             const functionId = /*[[${function != null ? function.id : 0}]]*/ 0;
 
             let data;
