@@ -22,5 +22,7 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.mail.host", () -> "localhost");
         registry.add("spring.mail.port", () -> "1025");
         registry.add("spring.mail.password", () -> "");
+        // Include seed data in tests so repositories have realistic data to assert against
+        registry.add("spring.flyway.locations", () -> "classpath:db/migration,classpath:db/seed");
     }
 }

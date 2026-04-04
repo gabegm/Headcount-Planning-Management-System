@@ -28,8 +28,8 @@ class PositionRepositoryTest extends AbstractIntegrationTest {
     @Test
     void findAll_returnsSeededPositions() {
         List<Position> positions = positionRepository.findAll();
-        // V4 migration seeds 5 positions
-        assertThat(positions).hasSize(5);
+        // Seed data: 13 actual (is_budget=FALSE) + 14 budget (is_budget=TRUE)
+        assertThat(positions).hasSize(27);
     }
 
     @Test
@@ -50,10 +50,10 @@ class PositionRepositoryTest extends AbstractIntegrationTest {
         positionRepository.save(buildPosition("POS-REGULAR-1", false));
 
         List<Position> budgetPositions = positionRepository.findBudget();
-        // V4+V5 seeds 5 non-budget positions; we add 1 budget position above
-        assertThat(budgetPositions).hasSize(1);
-        assertThat(budgetPositions.get(0).number()).isEqualTo("POS-BUDGET-1");
-        assertThat(budgetPositions.get(0).isBudget()).isTrue();
+        // Seed has 14 budget positions; we add 1 more above
+        assertThat(budgetPositions).hasSize(15);
+        assertThat(budgetPositions).anyMatch(p -> p.number().equals("POS-BUDGET-1") && p.isBudget());
+        assertThat(budgetPositions).noneMatch(p -> p.number().equals("POS-REGULAR-1") && p.isBudget());
     }
 
     private Position buildPosition(String number, boolean isBudget) {
