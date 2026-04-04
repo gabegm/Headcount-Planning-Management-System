@@ -6,7 +6,6 @@ import com.gaucimaistre.headcount.model.enums.UserType;
 import com.gaucimaistre.headcount.security.AppUserDetails;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,8 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class HelpControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
 
     private AppUserDetails adminUserDetails() {
         User adminUser = new User(1, "admin@example.com", "hash", null, UserType.ADMIN, true);
@@ -26,7 +23,7 @@ class HelpControllerTest extends AbstractIntegrationTest {
     void help_whenUnauthenticated_redirectsToLogin() throws Exception {
         mockMvc.perform(get("/help"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/auth/login"));
+                .andExpect(redirectedUrl("/auth/login"));
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.gaucimaistre.headcount.security;
 import com.gaucimaistre.headcount.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,8 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class SecurityConfigTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
 
     private static final String ADMIN_EMAIL = "gabriel.gaucimaistre@gaucimaistre.com";
 
@@ -28,15 +25,15 @@ class SecurityConfigTest extends AbstractIntegrationTest {
     void protectedEndpoints_requireAuth() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/auth/login"));
+                .andExpect(redirectedUrl("/auth/login"));
 
         mockMvc.perform(get("/positions"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/auth/login"));
+                .andExpect(redirectedUrl("/auth/login"));
 
         mockMvc.perform(get("/submissions"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/auth/login"));
+                .andExpect(redirectedUrl("/auth/login"));
     }
 
     @Test
@@ -49,7 +46,7 @@ class SecurityConfigTest extends AbstractIntegrationTest {
         // Unauthenticated → redirect to login
         mockMvc.perform(get("/admin"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/auth/login"));
+                .andExpect(redirectedUrl("/auth/login"));
     }
 
     @Test

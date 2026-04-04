@@ -3,7 +3,6 @@ package com.gaucimaistre.headcount.controller;
 import com.gaucimaistre.headcount.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -13,8 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class AuthControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
 
     private static final String ADMIN_EMAIL = "admin@example.com";
 
