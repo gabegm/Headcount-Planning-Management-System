@@ -20,6 +20,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -113,7 +115,7 @@ class SubmissionServiceTest {
 
         submissionService.applyEffectiveDateSubmissions();
 
-        verify(positionRepository, never()).findByNumber(any(), any(Boolean.class));
+        verify(positionRepository, never()).findByNumber(anyString(), anyBoolean());
     }
 
     private Submission buildSubmission(int id) {

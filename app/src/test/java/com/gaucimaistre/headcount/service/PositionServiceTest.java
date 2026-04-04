@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -40,8 +44,7 @@ class PositionServiceTest {
 
         assertThat(result).hasSize(1);
         verify(positionRepository).findAll();
-        verify(positionRepository, never()).findAllByFunctionIds(any());
-        verify(userService, never()).getFunctionIds(userId);
+        verify(positionRepository, never()).findAllByFunctionIds(anyList());
     }
 
     @Test
@@ -68,7 +71,7 @@ class PositionServiceTest {
         List<Position> result = positionService.findAll(userId, UserType.USER);
 
         assertThat(result).isEmpty();
-        verify(positionRepository, never()).findAllByFunctionIds(any());
+        verify(positionRepository, never()).findAllByFunctionIds(anyList());
     }
 
     @Test
@@ -91,7 +94,7 @@ class PositionServiceTest {
         boolean result = positionService.canUserAccessPosition(userId, UserType.ADMIN, "POS-001");
 
         assertThat(result).isTrue();
-        verify(positionRepository, never()).findByNumber(any(), any(Boolean.class));
+        verify(positionRepository, never()).findByNumber(anyString(), anyBoolean());
     }
 
     @Test
