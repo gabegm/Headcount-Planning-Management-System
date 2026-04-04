@@ -59,7 +59,7 @@ dependencies {
     implementation("org.owasp.antisamy:antisamy:1.7.8")
 
     // Thymeleaf Layout Dialect — layout:decorate (equivalent to Jinja2 {% extends %})
-    implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.4.0")
+    implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:4.0.1")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
