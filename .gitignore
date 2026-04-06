@@ -25,3 +25,4 @@ eggs/
 app/.gradle/
 app/build/
 app/out/
+bin/

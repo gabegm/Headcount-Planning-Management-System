@@ -16,8 +16,8 @@ submission/approval workflows, org hierarchy, and analytics dashboards.
 
 | Layer | Technology |
 |-------|-----------|
-| Language | Java 21 (LTS) |
-| Framework | Spring Boot 3.5.3 |
+| Language | Java 26 |
+| Framework | Spring Boot 4.0.5 |
 | Templates | Thymeleaf 3 + Layout Dialect |
 | Frontend | Bootstrap 5.3, Alpine.js 3, htmx 2, DataTables 2, Quill 2 |
 | Database | PostgreSQL 17 |
@@ -26,7 +26,7 @@ submission/approval workflows, org hierarchy, and analytics dashboards.
 | Security | Spring Security 6 (form login, BCrypt, CSRF, role hierarchy) |
 | Email | Spring Mail (SMTP) |
 | Scheduling | Spring `@Scheduled` |
-| Build | Gradle 8 (Kotlin DSL) |
+| Build | Gradle 9 (Kotlin DSL) |
 | Container | Docker + Docker Compose |
 | Tests | JUnit 5, Testcontainers, MockMvc, Mockito |
 
@@ -37,7 +37,7 @@ submission/approval workflows, org hierarchy, and analytics dashboards.
 
 ## Prerequisites
 
-- Java 21+
+- Java 26+
 - Docker & Docker Compose
 
 ---
@@ -133,7 +133,7 @@ cd app
 ./gradlew build
 ```
 
-The fat JAR is produced at `app/build/libs/headcount-*.jar`.
+The fat JAR is produced at `app/build/libs/gatekeeping-*.jar`.
 
 ---
 
@@ -162,7 +162,7 @@ Test categories:
 
 ```
 app/
-├── src/main/java/com/gaucimaistre/headcount/
+├── src/main/java/com/gaucimaistre/gatekeeping/
 │   ├── config/          # SecurityConfig
 │   ├── controller/      # MVC controllers (Auth, Home, Position, Submission, Admin, …)
 │   ├── mapper/          # JDBC RowMappers
@@ -248,8 +248,8 @@ Docker is not running, or the `db` service has not been started. Run
 `docker compose up db -d` from the repository root.
 
 **`java.lang.UnsupportedClassVersionError`**
-You are using a JDK older than 21. Check with `java -version` and install
-[Temurin 21](https://adoptium.net/).
+You are using a JDK older than 26. Check with `java -version` and install
+[Temurin 26](https://adoptium.net/).
 
 **Port 8080 already in use**
 Another process is using port 8080. Either stop it or change the application
